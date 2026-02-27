@@ -72,18 +72,6 @@
             }
 
             const answers = collectAnswers();
-            const unanswered = [];
-
-            quiz.questions.forEach((_, index) => {
-                if (answers[`q${index}`] === undefined) {
-                    unanswered.push(index + 1);
-                }
-            });
-
-            if (!forceSubmit && unanswered.length > 0) {
-                alert(`Please answer all questions before submitting. Missing: ${unanswered.join(", ")}`);
-                return;
-            }
 
             isSubmitted = true;
             submitBtn.disabled = true;

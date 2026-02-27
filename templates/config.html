@@ -75,6 +75,9 @@
         form.addEventListener("submit", async function (e) {
 
             e.preventDefault();
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Generating...";
 
             const quizData = {
                 topic: document.getElementById("topic").value,
@@ -85,19 +88,28 @@
 
             console.log("Sending:", quizData);
 
-            const response = await fetch("/generate-quiz", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(quizData)
-            });
+            try {
+                const response = await fetch("/generate-quiz", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(quizData)
+                });
 
-            const result = await response.json();
+                const result = await response.json();
 
-            localStorage.setItem("quizData", JSON.stringify(result));
+                if (!response.ok) {
+                    throw new Error(result.error || "Quiz generation failed");
+                }
 
-            window.location.href = "/quiz";
+                localStorage.setItem("quizData", JSON.stringify(result));
+                window.location.href = "/quiz";
+            } catch (error) {
+                alert("Unable to generate quiz right now. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Generate Quiz";
+            }
         });
 
     </script>

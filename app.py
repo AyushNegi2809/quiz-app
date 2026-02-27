@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+from ai_generator import generate_quiz
+import traceback
 
 app = Flask(__name__)
 CORS(app)
@@ -25,38 +27,22 @@ def result_page():
 # ---------------- API ROUTE ----------------
 
 @app.route("/generate-quiz", methods=["POST"])
-def generate_quiz():
+def generate_quiz_route():
 
     data = request.get_json()
     print("Received Data:", data)
 
-    quiz_data = {
-        "questions": [
-            {
-                "question": "What does HTML stand for?",
-                "options": [
-                    "Hyper Text Markup Language",
-                    "High Transfer Machine Language",
-                    "Hyper Tool Multi Language",
-                    "None"
-                ],
-                "correct_answer": 0
-            },
-
-            {
-                "question": "What does CSS stand for?",
-                "options": [
-                    "Cascade Styling Sheets",
-                    "Cascading Style Sheet",
-                    "Clean Style Sheet",
-                    "None"
-                ],
-                "correct_answer": 1
-            }
-        ]
-    }
-
-    return jsonify(quiz_data)
+    try:
+        quiz_data = generate_quiz(
+            data["topic"],
+            data["difficulty"],
+            data["questions"]
+        )
+        return jsonify(quiz_data)
+    except Exception as exc:
+        print("Quiz generation error:", exc)
+        traceback.print_exc()
+        return jsonify({"error": "Quiz generation failed"}), 500
 
 @app.route("/submit-quiz", methods=["POST"])
 def submit_quiz():
