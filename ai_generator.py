@@ -3,18 +3,26 @@ import html
 import re
 from collections import defaultdict, deque
 from typing import Any, Dict, List
-
+from dotenv import load_dotenv
+import os
 from openai import OpenAI
 
+load_dotenv()
+API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="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",
+    api_key="API_KEY",
 )
 
 _RECENT_HISTORY_MAX = 200
 _PROMPT_AVOID_MAX = 25
 _recent_questions: Dict[str, deque] = defaultdict(lambda: deque(maxlen=_RECENT_HISTORY_MAX))
+_DIFFICULTY_RULES: Dict[str, str] = {
+    "beginner": "Create definition-based and basic recognition questions focused on foundational facts and simple identification.",
+    "intermediate": "Create application-based understanding questions that require applying concepts in practical situations.",
+    "advance": "Create scenario-based and problem-solving questions that require deeper reasoning, analysis, and decision-making.",
+}
 
 
 def _strip_markdown_fences(text):
@@ -105,6 +113,12 @@ def _history_key(topic: str, difficulty: str) -> str:
 
 
 def _build_prompt(topic: str, difficulty: str, remaining: int, avoid_questions: List[str]) -> str:
+    difficulty_key = str(difficulty).strip().lower()
+    difficulty_rule = _DIFFICULTY_RULES.get(
+        difficulty_key,
+        "Create balanced questions appropriate to the provided difficulty level.",
+    )
+
     avoid_text = ""
     if avoid_questions:
         avoid_lines = "\n".join(f"- {item}" for item in avoid_questions)
@@ -119,6 +133,7 @@ Generate a multiple-choice quiz.
 Topic: {topic}
 Difficulty: {difficulty}
 Number of questions: {remaining}
+Difficulty guidance: {difficulty_rule}
 
 Return ONLY valid JSON in this exact format:
 {{
@@ -135,6 +150,7 @@ Rules:
 - Provide exactly {remaining} questions.
 - Each question must have exactly 4 options.
 - "correct_answer" must be the index (0-3) of the correct option.
+- Each question must test a different concept from the same topic.
 - Avoid common repeated starter questions for this topic.
 - Ensure all questions are distinct in wording and concept coverage.
 - Prefer varied question styles (concept, scenario, code snippet, troubleshooting).
