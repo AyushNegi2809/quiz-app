@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+</head>
+<body>
+    <h1>Quiz Started</h1>
+    <h2 id="timerDisplay">Time Left: 00:00</h2>
+    <h3 id="progress">Answered: 0 / 0</h3>
+
+    <form id="quizForm">
+        <div id="quizContainer"></div>
+        <button type="submit">Submit Quiz</button>
+    </form>
+
+    <script>
+        const quiz = JSON.parse(localStorage.getItem("quizData"));
+        const container = document.getElementById("quizContainer");
+        const form = document.getElementById("quizForm");
+        const submitBtn = form.querySelector("button[type='submit']");
+        const timerDisplay = document.getElementById("timerDisplay");
+        const progressDisplay = document.getElementById("progress");
+
+        let timerInterval = null;
+        let isSubmitted = false;
+
+        function formatTime(totalSeconds) {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+        }
+
+        function updateProgress() {
+            const totalQuestions = quiz && Array.isArray(quiz.questions) ? quiz.questions.length : 0;
+            const answeredCount = container.querySelectorAll('input[type="radio"]:checked').length;
+            progressDisplay.textContent = `Answered: ${answeredCount} / ${totalQuestions}`;
+        }
+
+        function attachProgressListeners() {
+            const radios = container.querySelectorAll('input[type="radio"]');
+            radios.forEach((radio) => {
+                radio.addEventListener("change", updateProgress);
+            });
+        }
+
+        function collectAnswers() {
+            const answers = {};
+
+            if (!quiz || !Array.isArray(quiz.questions)) {
+                return answers;
+            }
+
+            quiz.questions.forEach((_, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected) {
+                    answers[`q${index}`] = Number(selected.value);
+                }
+            });
+
+            return answers;
+        }
+
+        async function submitQuiz(forceSubmit) {
+            if (isSubmitted) {
+                return;
+            }
+
+            if (!quiz || !Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+                return;
+            }
+
+            const answers = collectAnswers();
+            const unanswered = [];
+
+            quiz.questions.forEach((_, index) => {
+                if (answers[`q${index}`] === undefined) {
+                    unanswered.push(index + 1);
+                }
+            });
+
+            if (!forceSubmit && unanswered.length > 0) {
+                alert(`Please answer all questions before submitting. Missing: ${unanswered.join(", ")}`);
+                return;
+            }
+
+            isSubmitted = true;
+            submitBtn.disabled = true;
+
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            try {
+                const response = await fetch("/submit-quiz", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        quiz: quiz,
+                        answers: answers
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to submit quiz");
+                }
+
+                const result = await response.json();
+                localStorage.setItem("quizResult", JSON.stringify(result));
+                window.location.href = "/result";
+            } catch (error) {
+                alert("Unable to submit quiz right now. Please try again.");
+                isSubmitted = false;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function startTimer() {
+            const timerMinutes = 1;
+            let remainingSeconds = timerMinutes * 60;
+
+            timerDisplay.textContent = `Time Left: ${formatTime(remainingSeconds)}`;
+
+            timerInterval = setInterval(() => {
+                remainingSeconds -= 1;
+
+                if (remainingSeconds <= 0) {
+                    timerDisplay.textContent = "Time Left: 00:00";
+                    submitQuiz(true);
+                    return;
+                }
+
+                timerDisplay.textContent = `Time Left: ${formatTime(remainingSeconds)}`;
+            }, 1000);
+        }
+
+        if (!quiz || !Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+            container.innerHTML = '<h3>No quiz data found.</h3><a href="/quiz-config">Go to quiz setup</a>';
+            submitBtn.disabled = true;
+            timerDisplay.textContent = "Time Left: 00:00";
+            progressDisplay.textContent = "Answered: 0 / 0";
+        } else {
+            quiz.questions.forEach((q, index) => {
+                let html = `<h3>Q${index + 1}: ${q.question}</h3>`;
+
+                q.options.forEach((opt, i) => {
+                    html += `
+                        <label>
+                            <input type="radio" name="q${index}" value="${i}">
+                            ${opt}
+                        </label><br>
+                    `;
+                });
+
+                html += "<br>";
+                container.innerHTML += html;
+            });
+
+            attachProgressListeners();
+            updateProgress();
+            startTimer();
+        }
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            submitQuiz(false);
+        });
+    </script>
+</body>
+</html>

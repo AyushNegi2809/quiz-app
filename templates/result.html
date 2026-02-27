@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Result</title>
+</head>
+<body>
+    <h1>Your Quiz Result</h1>
+    <p id="resultText"></p>
+    <a href="/quiz-config">Take Another Quiz</a>
+
+    <script>
+        const resultText = document.getElementById("resultText");
+        const stored = localStorage.getItem("quizResult");
+
+        if (!stored) {
+            resultText.textContent = "No result found. Please complete a quiz first.";
+        } else {
+            const result = JSON.parse(stored);
+            resultText.textContent = `You scored ${result.score} out of ${result.total}.`;
+        }
+    </script>
+</body>
+</html>

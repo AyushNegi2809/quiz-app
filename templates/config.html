@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUIZ CONFIGURATION</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            height: 100vh;
+            width: 100vw;
+            background-color: rgb(235, 235, 235);
+        }
+
+        .container h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 70px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Quiz Configurations</h1>
+
+        <!-- removed method="post" -->
+        <form id="quizForm">
+
+            <div>
+                <label>Select Topic: </label>
+                <select id="topic">
+                    <option value="HTML">HTML</option>
+                    <option value="CSS">CSS</option>
+                    <option value="Javascript">Javascript</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Select Difficulty: </label>
+                <select id="difficulty">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advance">Advance</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Select Number of Questions: </label>
+                <select id="questions">
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+
+            <br>
+            <button type="submit">Generate Quiz</button>
+
+        </form>
+    </div>
+
+    <script>
+        console.log("SCRIPT LOADED");
+
+        const form = document.getElementById("quizForm");
+
+        form.addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            const quizData = {
+                topic: document.getElementById("topic").value,
+                difficulty: document.getElementById("difficulty").value,
+                questions: Number(document.getElementById("questions").value)
+            };
+
+
+            console.log("Sending:", quizData);
+
+            const response = await fetch("/generate-quiz", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(quizData)
+            });
+
+            const result = await response.json();
+
+            localStorage.setItem("quizData", JSON.stringify(result));
+
+            window.location.href = "/quiz";
+        });
+
+    </script>
+
+</body>
+
+</html>
