@@ -1,11 +1,29 @@
 (function () {
+    const LOW_TIME_THRESHOLD_SECONDS = 60;
+
     const container = document.getElementById("quizContainer");
     const form = document.getElementById("quizForm");
     const submitBtn = form ? form.querySelector("button[type='submit']") : null;
     const timerDisplay = document.getElementById("timerDisplay");
     const progressDisplay = document.getElementById("progress");
+    const panelProgress = document.getElementById("panelProgress");
+    const panelRemaining = document.getElementById("panelRemaining");
+    const panelTimeLeft = document.getElementById("panelTimeLeft");
+    const panelAvgTime = document.getElementById("panelAvgTime");
+    const timeWarning = document.getElementById("timeWarning");
 
-    if (!container || !form || !submitBtn || !timerDisplay || !progressDisplay) {
+    if (
+        !container ||
+        !form ||
+        !submitBtn ||
+        !timerDisplay ||
+        !progressDisplay ||
+        !panelProgress ||
+        !panelRemaining ||
+        !panelTimeLeft ||
+        !panelAvgTime ||
+        !timeWarning
+    ) {
         return;
     }
 
@@ -39,10 +57,50 @@
         timerDisplay.textContent = "Time Left: " + formatTime(session.timeRemaining);
     }
 
+    function calculateStats() {
+        const safeSession = session && typeof session === "object" ? session : {};
+        const questions = Array.isArray(safeSession.quiz) ? safeSession.quiz : [];
+        const userAnswers = safeSession.answers && typeof safeSession.answers === "object" ? safeSession.answers : {};
+        const totalQuestions = questions.length;
+        const answeredCount = Object.keys(userAnswers).length;
+        const remaining = Math.max(0, totalQuestions - answeredCount);
+        const timeRemaining = Math.max(0, Math.floor(safeSession.timeRemaining || 0));
+        const totalTime = Math.max(0, Math.floor(safeSession.totalTime || 0));
+        const timeSpent = Math.max(0, totalTime - timeRemaining);
+        const avgTime = answeredCount > 0 ? Math.round(timeSpent / answeredCount) : 0;
+
+        return {
+            totalQuestions: totalQuestions,
+            answeredCount: answeredCount,
+            remaining: remaining,
+            timeRemaining: timeRemaining,
+            totalTime: totalTime,
+            avgTime: avgTime
+        };
+    }
+
+    function checkTimeWarning(stats) {
+        if (stats.remaining > 0 && stats.timeRemaining <= LOW_TIME_THRESHOLD_SECONDS) {
+            timeWarning.style.display = "block";
+            timeWarning.textContent = "⚠ You have " + stats.remaining + " unanswered questions and less than 1 minute remaining.";
+            return;
+        }
+        timeWarning.style.display = "none";
+        timeWarning.textContent = "";
+    }
+
+    function updateProgressPanel() {
+        const stats = calculateStats();
+        panelProgress.textContent = "Progress: " + stats.answeredCount + " / " + stats.totalQuestions;
+        panelRemaining.textContent = "Remaining: " + stats.remaining;
+        panelTimeLeft.textContent = "Time Left: " + formatTime(stats.timeRemaining);
+        panelAvgTime.textContent = "Average Time per Question: " + stats.avgTime + " sec";
+        checkTimeWarning(stats);
+    }
+
     function updateProgressDisplay() {
-        const totalQuestions = session.quiz.length;
-        const answeredCount = Object.keys(session.answers).length;
-        progressDisplay.textContent = "Answered: " + answeredCount + " / " + totalQuestions;
+        const stats = calculateStats();
+        progressDisplay.textContent = "Answered: " + stats.answeredCount + " / " + stats.totalQuestions;
     }
 
     function renderEmptyState() {
@@ -50,6 +108,7 @@
         submitBtn.disabled = true;
         timerDisplay.textContent = "Time Left: 00:00";
         progressDisplay.textContent = "Answered: 0 / 0";
+        updateProgressPanel();
     }
 
     function getQuestionStatus(index) {
@@ -93,6 +152,7 @@
         SessionManager.updateSession({ currentQuestion: session.currentQuestion });
         renderQuestion();
         updateNavigationStyles();
+        updateProgressPanel();
     }
 
     function renderNavigationPanel() {
@@ -175,8 +235,11 @@
                 SessionManager.updateSession({ answers: session.answers });
                 updateProgressDisplay();
                 updateNavigationStyles();
+                updateProgressPanel();
             });
         });
+
+        updateProgressPanel();
     }
 
     function collectAnswersForSubmit() {
@@ -238,6 +301,7 @@
 
     function startTimer() {
         updateTimerDisplay();
+        updateProgressPanel();
 
         timerInterval = setInterval(function () {
             session.timeRemaining -= 1;
@@ -246,6 +310,7 @@
                 session.timeRemaining = 0;
                 SessionManager.updateSession({ timeRemaining: 0 });
                 updateTimerDisplay();
+                updateProgressPanel();
                 submitQuiz();
                 return;
             }
@@ -253,6 +318,7 @@
             // Persist every tick so countdown survives refreshes.
             SessionManager.updateSession({ timeRemaining: session.timeRemaining });
             updateTimerDisplay();
+            updateProgressPanel();
         }, 1000);
     }
 
@@ -299,6 +365,7 @@
     session.currentQuestion = clampQuestionIndex(session.currentQuestion, session.quiz.length);
     SessionManager.updateSession({ currentQuestion: session.currentQuestion });
 
+    updateProgressPanel();
     renderQuestion();
     renderNavigationPanel();
     updateNavigationStyles();
