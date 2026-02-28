@@ -3,12 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Result</title>
+    <title>Performance Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 20px;
+        }
+
+        .dashboard-card {
+            width: 100%;
+            max-width: 640px;
+            background: #ffffff;
+            border: 1px solid #dbe4ee;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 24px;
+        }
+
+        .dashboard-card h1 {
+            margin: 0 0 18px 0;
+            font-size: 1.7rem;
+            color: #0f172a;
+        }
+
+        .performance-label {
+            display: inline-block;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+        }
+
+        .performance-label.excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .performance-label.good {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .performance-label.average {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .performance-label.needs-improvement {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+
+        .metric-title {
+            margin: 0 0 6px 0;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        #emptyState {
+            color: #b91c1c;
+            margin: 10px 0 0 0;
+            display: none;
+            font-weight: 600;
+        }
+
+        .actions {
+            margin-top: 20px;
+        }
+
+        .actions a {
+            text-decoration: none;
+            display: inline-block;
+            background: #0f172a;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 640px) {
+            .dashboard-card {
+                padding: 18px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Your Quiz Result</h1>
-    <p id="resultText"></p>
-    <a href="/quiz-config">Take Another Quiz</a>
+    <section class="dashboard-card">
+        <h1>Quiz Performance Dashboard</h1>
+        <div id="performanceLabel" class="performance-label"></div>
+
+        <div class="metrics-grid">
+            <article class="metric-item">
+                <p class="metric-title">Score</p>
+                <p id="scoreMetric" class="metric-value">0 / 0</p>
+            </article>
+            <article class="metric-item">
+                <p class="metric-title">Accuracy</p>
+                <p id="accuracyMetric" class="metric-value">0%</p>
+            </article>
+            <article class="metric-item">
+                <p class="metric-title">Answered Questions</p>
+                <p id="answeredMetric" class="metric-value">0</p>
+            </article>
+            <article class="metric-item">
+                <p class="metric-title">Unanswered Questions</p>
+                <p id="unansweredMetric" class="metric-value">0</p>
+            </article>
+            <article class="metric-item">
+                <p class="metric-title">Total Time Used</p>
+                <p id="timeUsedMetric" class="metric-value">00:00</p>
+            </article>
+            <article class="metric-item">
+                <p class="metric-title">Average Time per Question</p>
+                <p id="avgTimeMetric" class="metric-value">0 sec</p>
+            </article>
+        </div>
+
+        <p id="emptyState">No result found. Please complete a quiz first.</p>
+
+        <div class="actions">
+            <a href="/quiz-config">Take Another Quiz</a>
+        </div>
+    </section>
 
     <script src="{{ url_for('static', filename='js/sessionManager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/result.js') }}"></script>

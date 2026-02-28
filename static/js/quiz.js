@@ -289,7 +289,22 @@
             }
 
             const result = await response.json();
-            localStorage.setItem("quizResult", JSON.stringify(result));
+
+            const quizSnapshot = {
+                questions: Array.isArray(session.quiz) ? session.quiz : [],
+                userAnswers: session.answers && typeof session.answers === "object" ? session.answers : {},
+                totalTime: Number.isFinite(session.totalTime) ? Math.floor(session.totalTime) : 0,
+                timeRemaining: Number.isFinite(session.timeRemaining) ? Math.floor(session.timeRemaining) : 0
+            };
+
+            localStorage.setItem("quizResult", JSON.stringify({
+                score: Number.isFinite(result.score) ? result.score : 0,
+                total: Number.isFinite(result.total) ? result.total : quizSnapshot.questions.length,
+                questions: quizSnapshot.questions,
+                userAnswers: quizSnapshot.userAnswers,
+                totalTime: quizSnapshot.totalTime,
+                timeRemaining: quizSnapshot.timeRemaining
+            }));
             SessionManager.clearSession();
             window.location.href = "/result";
         } catch (error) {
