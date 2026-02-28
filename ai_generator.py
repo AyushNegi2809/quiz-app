@@ -3,16 +3,16 @@ import html
 import re
 from collections import defaultdict, deque
 from typing import Any, Dict, List
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
-API_KEY = os.getenv("OPENROUTER_API_KEY")
+API_KEY = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="API_KEY",
+    api_key=API_KEY,
 )
 
 _RECENT_HISTORY_MAX = 200
@@ -160,6 +160,9 @@ Rules:
 
 
 def _call_model(prompt: str) -> Dict[str, Any]:
+    if not API_KEY:
+        raise ValueError("Missing API key. Set OPENROUTER_API_KEY (or OPENAI_API_KEY) in your .env file.")
+
     response = client.chat.completions.create(
         model="openai/gpt-4o-mini",
         messages=[
