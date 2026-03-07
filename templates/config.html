@@ -23,6 +23,26 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 70px;
         }
+
+        #quizLoader {
+            display: none;
+            margin: 12px 0;
+            font-weight: 600;
+        }
+
+        #errorPanel {
+            display: none;
+            margin-top: 16px;
+            padding: 14px;
+            border: 1px solid #fca5a5;
+            background: #fef2f2;
+            border-radius: 6px;
+            max-width: 420px;
+        }
+
+        #errorPanel p {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -31,40 +51,49 @@
     <div class="container">
         <h1>Quiz Configurations</h1>
 
-        <!-- removed method="post" -->
-        <form id="quizForm">
+        <div id="quizContainer">
+            <!-- removed method="post" -->
+            <form id="quizForm">
 
-            <div>
-                <label>Select Topic: </label>
-                <select id="topic">
-                    <option value="HTML">HTML</option>
-                    <option value="CSS">CSS</option>
-                    <option value="Javascript">Javascript</option>
-                </select>
-            </div>
+                <div>
+                    <label>Select Topic: </label>
+                    <select id="topic">
+                        <option value="HTML">HTML</option>
+                        <option value="CSS">CSS</option>
+                        <option value="Javascript">Javascript</option>
+                    </select>
+                </div>
 
-            <div>
-                <label>Select Difficulty: </label>
-                <select id="difficulty">
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advance">Advance</option>
-                </select>
-            </div>
+                <div>
+                    <label>Select Difficulty: </label>
+                    <select id="difficulty">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advance">Advance</option>
+                    </select>
+                </div>
 
-            <div>
-                <label>Select Number of Questions: </label>
-                <select id="questions">
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                </select>
-            </div>
+                <div>
+                    <label>Select Number of Questions: </label>
+                    <select id="questions">
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
 
-            <br>
-            <button type="submit">Generate Quiz</button>
+                <div id="quizLoader">Generating quiz...</div>
 
-        </form>
+                <br>
+                <button type="submit">Generate Quiz</button>
+
+            </form>
+        </div>
+
+        <div id="errorPanel" role="alert" aria-live="polite">
+            <p id="errorMessage">⚠ Unable to generate quiz right now. Please try again.</p>
+            <button type="button" id="retryBtn">Retry</button>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/sessionManager.js') }}"></script>
