@@ -101,6 +101,15 @@
         return question.options[optionIndex];
     }
 
+    function getNumericIndex(value) {
+        if (value === null || value === undefined || value === "") {
+            return null;
+        }
+
+        const parsed = Number(value);
+        return Number.isInteger(parsed) ? parsed : null;
+    }
+
     function updateReviewNavigationButtons() {
         reviewPrevBtn.disabled = reviewIndex <= 0;
         reviewNextBtn.disabled = reviewIndex >= reviewQuestions.length - 1;
@@ -118,13 +127,13 @@
         }
 
         const userAnswerValue = reviewUserAnswers[String(reviewIndex)];
-        const userAnswerIndex = Number.isInteger(Number(userAnswerValue)) ? Number(userAnswerValue) : null;
-        const correctAnswerIndex = Number.isInteger(Number(question.correct_answer)) ? Number(question.correct_answer) : null;
+        const userAnswerIndex = getNumericIndex(userAnswerValue);
+        const correctAnswerIndex = getNumericIndex(question.correct_answer);
 
         reviewIndexDisplay.textContent = "Question " + (reviewIndex + 1) + " of " + reviewQuestions.length;
         reviewQuestionText.textContent = question.question || "";
 
-        let optionsHtml = "";
+        reviewOptions.textContent = "";
         question.options.forEach(function (optionText, optionIndex) {
             let stateClass = "normal_option";
             if (correctAnswerIndex === optionIndex) {
@@ -133,9 +142,11 @@
                 stateClass = "user_wrong_option";
             }
 
-            optionsHtml += '<li class="' + stateClass + '">' + optionText + "</li>";
+            const optionNode = document.createElement("li");
+            optionNode.className = stateClass;
+            optionNode.textContent = optionText;
+            reviewOptions.appendChild(optionNode);
         });
-        reviewOptions.innerHTML = optionsHtml;
 
         if (userAnswerIndex === null || !Number.isInteger(userAnswerIndex)) {
             reviewUserAnswer.textContent = "Not answered";
@@ -251,9 +262,4 @@
         exitReviewMode();
     });
 
-    window.startReviewMode = startReviewMode;
-    window.renderReviewQuestion = renderReviewQuestion;
-    window.goToNextReviewQuestion = goToNextReviewQuestion;
-    window.goToPreviousReviewQuestion = goToPreviousReviewQuestion;
-    window.exitReviewMode = exitReviewMode;
 })();

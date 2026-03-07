@@ -212,8 +212,4 @@
     }
 
     hideError();
-
-    window.showError = showError;
-    window.hideError = hideError;
-    window.retryQuizGeneration = retryQuizGeneration;
 })();

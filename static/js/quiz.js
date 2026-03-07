@@ -82,7 +82,7 @@
     function checkTimeWarning(stats) {
         if (stats.remaining > 0 && stats.timeRemaining <= LOW_TIME_THRESHOLD_SECONDS) {
             timeWarning.style.display = "block";
-            timeWarning.textContent = "⚠ You have " + stats.remaining + " unanswered questions and less than 1 minute remaining.";
+            timeWarning.textContent = "Warning: You have " + stats.remaining + " unanswered questions and less than 1 minute remaining.";
             return;
         }
         timeWarning.style.display = "none";

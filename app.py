@@ -1,10 +1,43 @@
-from flask import Flask, request, jsonify, render_template
+import logging
+
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
+
 from ai_generator import generate_quiz
-import traceback
 
 app = Flask(__name__)
 CORS(app)
+app.logger.setLevel(logging.INFO)
+
+ALLOWED_TOPICS = {"html", "css", "javascript"}
+ALLOWED_DIFFICULTIES = {"beginner", "intermediate", "advance"}
+ALLOWED_QUESTION_COUNTS = {10, 15, 20}
+
+
+def _validate_generate_payload(data):
+    if not isinstance(data, dict):
+        return None, "Invalid request payload"
+
+    topic = str(data.get("topic", "")).strip()
+    difficulty = str(data.get("difficulty", "")).strip()
+
+    try:
+        question_count = int(data.get("questions"))
+    except (TypeError, ValueError):
+        return None, "Question count must be a number"
+
+    if topic.lower() not in ALLOWED_TOPICS:
+        return None, "Invalid topic"
+    if difficulty.lower() not in ALLOWED_DIFFICULTIES:
+        return None, "Invalid difficulty"
+    if question_count not in ALLOWED_QUESTION_COUNTS:
+        return None, "Invalid question count"
+
+    return {
+        "topic": topic,
+        "difficulty": difficulty,
+        "questions": question_count
+    }, None
 
 # ---------------- PAGE ROUTES ----------------
 
@@ -28,20 +61,24 @@ def result_page():
 
 @app.route("/generate-quiz", methods=["POST"])
 def generate_quiz_route():
-
-    data = request.get_json()
-    print("Received Data:", data)
+    data = request.get_json(silent=True)
+    payload, error = _validate_generate_payload(data)
+    if error:
+        app.logger.warning("generate-quiz validation failed: %s", error)
+        return jsonify({"error": error}), 400
 
     try:
         quiz_data = generate_quiz(
-            data["topic"],
-            data["difficulty"],
-            data["questions"]
+            payload["topic"],
+            payload["difficulty"],
+            payload["questions"]
         )
         return jsonify(quiz_data)
-    except Exception as exc:
-        print("Quiz generation error:", exc)
-        traceback.print_exc()
+    except ValueError as exc:
+        app.logger.exception("Quiz generation value error")
+        return jsonify({"error": str(exc)}), 500
+    except Exception:
+        app.logger.exception("Unexpected quiz generation error")
         return jsonify({"error": "Quiz generation failed"}), 500
 
 @app.route("/submit-quiz", methods=["POST"])
