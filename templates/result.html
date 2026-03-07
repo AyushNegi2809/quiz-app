@@ -112,6 +112,92 @@
             font-weight: 600;
         }
 
+        .actions button {
+            margin-left: 8px;
+            border: none;
+            background: #0f172a;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #reviewPanel {
+            display: none;
+            margin-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+
+        #reviewQuestionText {
+            margin: 0 0 10px 0;
+            color: #0f172a;
+        }
+
+        #reviewOptions {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+        }
+
+        #reviewOptions li {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #ffffff;
+            color: #1f2937;
+        }
+
+        .normal_option {
+            border-color: #e2e8f0;
+            background: #ffffff;
+        }
+
+        .correct_option {
+            border-color: #16a34a !important;
+            background: #dcfce7 !important;
+            color: #166534 !important;
+            font-weight: 600;
+        }
+
+        .user_wrong_option {
+            border-color: #dc2626 !important;
+            background: #fee2e2 !important;
+            color: #991b1b !important;
+            font-weight: 600;
+        }
+
+        .review-meta {
+            margin: 8px 0;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .review-nav {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .review-nav button {
+            border: none;
+            background: #0f172a;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .review-nav button[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 640px) {
             .dashboard-card {
                 padding: 18px;
@@ -125,40 +211,59 @@
 </head>
 <body>
     <section class="dashboard-card">
-        <h1>Quiz Performance Dashboard</h1>
-        <div id="performanceLabel" class="performance-label"></div>
+        <div id="resultsPanel">
+            <h1>Quiz Performance Dashboard</h1>
+            <div id="performanceLabel" class="performance-label"></div>
 
-        <div class="metrics-grid">
-            <article class="metric-item">
-                <p class="metric-title">Score</p>
-                <p id="scoreMetric" class="metric-value">0 / 0</p>
-            </article>
-            <article class="metric-item">
-                <p class="metric-title">Accuracy</p>
-                <p id="accuracyMetric" class="metric-value">0%</p>
-            </article>
-            <article class="metric-item">
-                <p class="metric-title">Answered Questions</p>
-                <p id="answeredMetric" class="metric-value">0</p>
-            </article>
-            <article class="metric-item">
-                <p class="metric-title">Unanswered Questions</p>
-                <p id="unansweredMetric" class="metric-value">0</p>
-            </article>
-            <article class="metric-item">
-                <p class="metric-title">Total Time Used</p>
-                <p id="timeUsedMetric" class="metric-value">00:00</p>
-            </article>
-            <article class="metric-item">
-                <p class="metric-title">Average Time per Question</p>
-                <p id="avgTimeMetric" class="metric-value">0 sec</p>
-            </article>
+            <div class="metrics-grid">
+                <article class="metric-item">
+                    <p class="metric-title">Score</p>
+                    <p id="scoreMetric" class="metric-value">0 / 0</p>
+                </article>
+                <article class="metric-item">
+                    <p class="metric-title">Accuracy</p>
+                    <p id="accuracyMetric" class="metric-value">0%</p>
+                </article>
+                <article class="metric-item">
+                    <p class="metric-title">Answered Questions</p>
+                    <p id="answeredMetric" class="metric-value">0</p>
+                </article>
+                <article class="metric-item">
+                    <p class="metric-title">Unanswered Questions</p>
+                    <p id="unansweredMetric" class="metric-value">0</p>
+                </article>
+                <article class="metric-item">
+                    <p class="metric-title">Total Time Used</p>
+                    <p id="timeUsedMetric" class="metric-value">00:00</p>
+                </article>
+                <article class="metric-item">
+                    <p class="metric-title">Average Time per Question</p>
+                    <p id="avgTimeMetric" class="metric-value">0 sec</p>
+                </article>
+            </div>
+
+            <p id="emptyState">No result found. Please complete a quiz first.</p>
+
+            <div class="actions">
+                <a href="/quiz-config">Take Another Quiz</a>
+                <button type="button" id="reviewBtn">Review Questions</button>
+            </div>
         </div>
 
-        <p id="emptyState">No result found. Please complete a quiz first.</p>
+        <div id="reviewPanel">
+            <h2>Review Questions</h2>
+            <p id="reviewIndexDisplay" class="review-meta">Question 1 of 1</p>
+            <h3 id="reviewQuestionText"></h3>
+            <ul id="reviewOptions"></ul>
+            <p class="review-meta">Your Answer: <span id="reviewUserAnswer"></span></p>
+            <p class="review-meta">Correct Answer: <span id="reviewCorrectAnswer"></span></p>
+            <p id="reviewExplanationRow" class="review-meta" style="display:none;">Explanation: <span id="reviewExplanation"></span></p>
 
-        <div class="actions">
-            <a href="/quiz-config">Take Another Quiz</a>
+            <div class="review-nav">
+                <button type="button" id="reviewPrevBtn">Previous</button>
+                <button type="button" id="reviewNextBtn">Next</button>
+                <button type="button" id="reviewExitBtn">Exit Review</button>
+            </div>
         </div>
     </section>
 
