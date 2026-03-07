@@ -115,6 +115,18 @@
         reviewNextBtn.disabled = reviewIndex >= reviewQuestions.length - 1;
     }
 
+    function isReviewModeActive() {
+        return reviewPanel.style.display !== "none";
+    }
+
+    function isTypingTarget(target) {
+        if (!target) {
+            return false;
+        }
+        const tagName = target.tagName ? target.tagName.toLowerCase() : "";
+        return target.isContentEditable || tagName === "input" || tagName === "textarea" || tagName === "select";
+    }
+
     function renderReviewQuestion(index) {
         if (!Array.isArray(reviewQuestions) || reviewQuestions.length === 0) {
             return;
@@ -261,5 +273,24 @@
     reviewExitBtn.addEventListener("click", function () {
         exitReviewMode();
     });
+
+    function handleReviewKeyboardInput(event) {
+        if (!isReviewModeActive() || isTypingTarget(event.target)) {
+            return;
+        }
+
+        if (event.key === "ArrowRight") {
+            event.preventDefault();
+            goToNextReviewQuestion();
+            return;
+        }
+
+        if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            goToPreviousReviewQuestion();
+        }
+    }
+
+    document.addEventListener("keydown", handleReviewKeyboardInput);
 
 })();

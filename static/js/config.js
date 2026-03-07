@@ -199,6 +199,25 @@
         generateQuiz(quizRequest);
     }
 
+    function handleConfigKeyboardInput(event) {
+        if (event.key !== "Enter") {
+            return;
+        }
+
+        const target = event.target;
+        const tagName = target && target.tagName ? target.tagName.toLowerCase() : "";
+        if (tagName === "textarea") {
+            return;
+        }
+        if (tagName === "button") {
+            return;
+        }
+
+        event.preventDefault();
+        const quizRequest = buildQuizRequestFromForm();
+        generateQuiz(quizRequest);
+    }
+
     form.addEventListener("submit", function (e) {
         e.preventDefault();
         const quizRequest = buildQuizRequestFromForm();
@@ -210,6 +229,8 @@
             retryQuizGeneration();
         });
     }
+
+    document.addEventListener("keydown", handleConfigKeyboardInput);
 
     hideError();
 })();

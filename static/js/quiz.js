@@ -43,6 +43,48 @@
         return Array.isArray(quizList) && quizList.length > 0;
     }
 
+    function isElementVisible(element) {
+        if (!element) {
+            return false;
+        }
+        return element.style.display !== "none" && element.offsetParent !== null;
+    }
+
+    function isTypingTarget(target) {
+        if (!target) {
+            return false;
+        }
+        const tagName = target.tagName ? target.tagName.toLowerCase() : "";
+        const type = target.type ? String(target.type).toLowerCase() : "";
+        const isTextInput = tagName === "input" && (
+            type === "text" ||
+            type === "search" ||
+            type === "email" ||
+            type === "password" ||
+            type === "url" ||
+            type === "tel" ||
+            type === "number"
+        );
+        return Boolean(
+            target.isContentEditable ||
+            tagName === "textarea" ||
+            tagName === "select" ||
+            isTextInput
+        );
+    }
+
+    function shouldIgnoreQuizKeyboardInput(event) {
+        const loader = document.getElementById("quizLoader");
+        const errorPanel = document.getElementById("errorPanel");
+        return (
+            !hasQuizData(session.quiz) ||
+            isSubmitted ||
+            isElementVisible(loader) ||
+            isElementVisible(errorPanel) ||
+            isTypingTarget(event.target)
+        );
+    }
+
     function clampQuestionIndex(index, quizLength) {
         if (quizLength <= 0) {
             return 0;
@@ -153,6 +195,53 @@
         renderQuestion();
         updateNavigationStyles();
         updateProgressPanel();
+    }
+
+    function nextQuestion() {
+        const nextIndex = clampQuestionIndex(session.currentQuestion + 1, session.quiz.length);
+        goToQuestion(nextIndex);
+    }
+
+    function previousQuestion() {
+        const previousIndex = clampQuestionIndex(session.currentQuestion - 1, session.quiz.length);
+        goToQuestion(previousIndex);
+    }
+
+    function selectAnswerOption(optionIndex) {
+        const safeIndex = Number(optionIndex);
+        if (!Number.isInteger(safeIndex) || safeIndex < 0) {
+            return;
+        }
+        const selector = 'input[name="currentQuestionOption"][value="' + safeIndex + '"]';
+        const optionRadio = container.querySelector(selector);
+        if (!optionRadio) {
+            return;
+        }
+        optionRadio.checked = true;
+        optionRadio.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    function handleQuizKeyboardInput(event) {
+        if (shouldIgnoreQuizKeyboardInput(event)) {
+            return;
+        }
+
+        if (event.key === "ArrowRight") {
+            event.preventDefault();
+            nextQuestion();
+            return;
+        }
+
+        if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            previousQuestion();
+            return;
+        }
+
+        if (event.key >= "1" && event.key <= "4") {
+            event.preventDefault();
+            selectAnswerOption(Number(event.key) - 1);
+        }
     }
 
     function renderNavigationPanel() {
@@ -391,4 +480,6 @@
         e.preventDefault();
         submitQuiz();
     });
+
+    document.addEventListener("keydown", handleQuizKeyboardInput);
 })();
