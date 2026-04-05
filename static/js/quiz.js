@@ -1,16 +1,26 @@
 (function () {
-    const LOW_TIME_THRESHOLD_SECONDS = 60;
-
+    const TIMER_BASE_CLASS = "m-0 text-[clamp(1.8rem,calc(2vw+1rem),2.7rem)] font-extrabold tracking-[0.06em] transition-[color,text-shadow,transform] duration-200 ease-in-out";
+    const TIMER_GOLD_CLASS = "text-[#d4af37] [text-shadow:0_0_18px_rgba(212,175,55,0.25)]";
+    const TIMER_MEDIUM_CLASS = "text-[#f59e0b] [text-shadow:0_0_18px_rgba(245,158,11,0.3)]";
+    const TIMER_LOW_CLASS = "text-[#ef4444] [text-shadow:0_0_20px_rgba(239,68,68,0.35)] animate-pulse";
+    const NAV_BUTTON_BASE_CLASS = "q-nav-btn min-w-0 w-full h-[42px] rounded-xl border border-[#343948] bg-[#232734] text-[#f5f3ef] font-bold cursor-pointer transition-[transform,box-shadow,border-color,background,color] duration-200 ease-in-out hover:-translate-y-px hover:shadow-[0_10px_20px_rgba(0,0,0,0.22)] max-[640px]:h-[38px] max-[640px]:rounded-[10px]";
+    const NAV_CURRENT_CLASS = "bg-[linear-gradient(135deg,rgba(212,175,55,0.88),#f5df90)] border-[rgba(245,223,144,0.9)] text-[#1a160b] shadow-[0_0_0_1px_rgba(212,175,55,0.12),0_12px_20px_rgba(212,175,55,0.2)]";
+    const NAV_ANSWERED_CLASS = "bg-[rgba(30,166,114,0.18)] border-[rgba(30,166,114,0.55)] text-[#dff9ef]";
+    const NAV_UNANSWERED_CLASS = "bg-[#2a303c] border-[#39404e] text-[#d2d7e2]";
+    const OPTION_BASE_CLASS = "quiz-option relative flex cursor-pointer items-center gap-[14px] rounded-[10px] border border-[#333846] bg-[rgba(255,255,255,0.02)] px-4 py-[14px] transition-[transform,box-shadow,border-color,background] duration-200 ease-in-out hover:border-[rgba(212,175,55,0.46)] hover:bg-[rgba(255,255,255,0.04)] hover:shadow-[0_0_0_1px_rgba(212,175,55,0.12),0_10px_22px_rgba(0,0,0,0.24)]";
+    const OPTION_SELECTED_CLASS = "border-[#d4af37] bg-[linear-gradient(135deg,rgba(212,175,55,0.16),rgba(255,255,255,0.04))] shadow-[0_0_0_1px_rgba(212,175,55,0.18),0_14px_26px_rgba(0,0,0,0.28)] scale-[1.01]";
+    const OPTION_INDICATOR_BASE_CLASS = "quiz-option-indicator h-5 w-5 shrink-0 rounded-full border-2 border-[rgba(255,255,255,0.35)] bg-transparent transition-[border-color,box-shadow,background] duration-200 ease-in-out";
+    const OPTION_INDICATOR_SELECTED_CLASS = "border-[#d4af37] bg-[radial-gradient(circle,#d4af37_0_45%,transparent_50%)] shadow-[0_0_12px_rgba(212,175,55,0.28)]";
     const container = document.getElementById("quizContainer");
     const form = document.getElementById("quizForm");
     const submitBtn = form ? form.querySelector("button[type='submit']") : null;
     const timerDisplay = document.getElementById("timerDisplay");
     const progressDisplay = document.getElementById("progress");
+    const progressBarFill = document.getElementById("progressBarFill");
     const panelProgress = document.getElementById("panelProgress");
     const panelRemaining = document.getElementById("panelRemaining");
     const panelTimeLeft = document.getElementById("panelTimeLeft");
     const panelAvgTime = document.getElementById("panelAvgTime");
-    const timeWarning = document.getElementById("timeWarning");
 
     if (
         !container ||
@@ -18,11 +28,11 @@
         !submitBtn ||
         !timerDisplay ||
         !progressDisplay ||
+        !progressBarFill ||
         !panelProgress ||
         !panelRemaining ||
         !panelTimeLeft ||
-        !panelAvgTime ||
-        !timeWarning
+        !panelAvgTime
     ) {
         return;
     }
@@ -97,6 +107,17 @@
 
     function updateTimerDisplay() {
         timerDisplay.textContent = "Time Left: " + formatTime(session.timeRemaining);
+        const totalTime = Math.max(0, Math.floor(session.totalTime || 0));
+        const ratio = totalTime > 0 ? session.timeRemaining / totalTime : 1;
+        if (ratio < 0.2) {
+            timerDisplay.className = TIMER_BASE_CLASS + " " + TIMER_LOW_CLASS;
+            return;
+        }
+        if (ratio < 0.5) {
+            timerDisplay.className = TIMER_BASE_CLASS + " " + TIMER_MEDIUM_CLASS;
+            return;
+        }
+        timerDisplay.className = TIMER_BASE_CLASS + " " + TIMER_GOLD_CLASS;
     }
 
     function calculateStats() {
@@ -121,35 +142,35 @@
         };
     }
 
-    function checkTimeWarning(stats) {
-        if (stats.remaining > 0 && stats.timeRemaining <= LOW_TIME_THRESHOLD_SECONDS) {
-            timeWarning.style.display = "block";
-            timeWarning.textContent = "Warning: You have " + stats.remaining + " unanswered questions and less than 1 minute remaining.";
-            return;
-        }
-        timeWarning.style.display = "none";
-        timeWarning.textContent = "";
-    }
-
     function updateProgressPanel() {
         const stats = calculateStats();
         panelProgress.textContent = "Progress: " + stats.answeredCount + " / " + stats.totalQuestions;
         panelRemaining.textContent = "Remaining: " + stats.remaining;
         panelTimeLeft.textContent = "Time Left: " + formatTime(stats.timeRemaining);
         panelAvgTime.textContent = "Average Time per Question: " + stats.avgTime + " sec";
-        checkTimeWarning(stats);
+        submitBtn.disabled = stats.answeredCount < 1 || isSubmitted;
     }
 
     function updateProgressDisplay() {
         const stats = calculateStats();
         progressDisplay.textContent = "Answered: " + stats.answeredCount + " / " + stats.totalQuestions;
+        const completion = stats.totalQuestions > 0
+            ? (stats.answeredCount / stats.totalQuestions) * 100
+            : 0;
+        progressBarFill.style.width = completion + "%";
     }
 
     function renderEmptyState() {
-        container.innerHTML = '<h3>No quiz data found.</h3><a href="/quiz-config">Go to quiz setup</a>';
+        container.innerHTML = ''
+            + '<div class="rounded-2xl border border-[rgba(212,175,55,0.2)] bg-[rgba(255,255,255,0.03)] p-7">'
+            + '<h3 class="mt-0">No quiz data found.</h3>'
+            + '<a class="text-[#d4af37]" href="/quiz-config">Go to quiz setup</a>'
+            + "</div>";
         submitBtn.disabled = true;
         timerDisplay.textContent = "Time Left: 00:00";
         progressDisplay.textContent = "Answered: 0 / 0";
+        progressBarFill.style.width = "0%";
+        timerDisplay.className = TIMER_BASE_CLASS + " " + TIMER_GOLD_CLASS;
         updateProgressPanel();
     }
 
@@ -163,14 +184,14 @@
         return "unanswered";
     }
 
-    function statusStyle(status) {
+    function statusClass(status) {
         if (status === "current") {
-            return "background:#2563eb;color:#fff;border:1px solid #1d4ed8;";
+            return NAV_CURRENT_CLASS;
         }
         if (status === "answered") {
-            return "background:#16a34a;color:#fff;border:1px solid #15803d;";
+            return NAV_ANSWERED_CLASS;
         }
-        return "background:#9ca3af;color:#111827;border:1px solid #6b7280;";
+        return NAV_UNANSWERED_CLASS;
     }
 
     function ensurePanelContainer() {
@@ -179,8 +200,12 @@
         }
         panelContainer = document.createElement("div");
         panelContainer.id = "questionNavigationPanel";
-        panelContainer.style.margin = "12px 0 18px 0";
-        form.insertBefore(panelContainer, container);
+        const navigationMount = document.getElementById("questionNavigatorMount");
+        if (navigationMount) {
+            navigationMount.appendChild(panelContainer);
+        } else {
+            form.insertBefore(panelContainer, container);
+        }
         return panelContainer;
     }
 
@@ -246,14 +271,13 @@
 
     function renderNavigationPanel() {
         const host = ensurePanelContainer();
-        let panelHtml = '<div style="font-weight:600;margin-bottom:8px;">Question Navigator</div>';
-        panelHtml += '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+        let panelHtml = '<p class="mb-[10px] text-[0.9rem] text-[#b9bcc8]">Navigate by question number</p>';
+        panelHtml += '<div class="grid grid-cols-5 gap-[10px] max-[640px]:gap-2">';
 
         for (let i = 0; i < session.quiz.length; i += 1) {
-            const status = getQuestionStatus(i);
             panelHtml += ''
-                + '<button type="button" class="q-nav-btn" data-index="' + i + '" '
-                + 'style="min-width:38px;height:34px;border-radius:6px;cursor:pointer;' + statusStyle(status) + '">'
+                + '<button type="button" class="' + NAV_BUTTON_BASE_CLASS + '" data-index="' + i + '" '
+                + 'aria-label="Go to question ' + (i + 1) + '">'
                 + (i + 1)
                 + "</button>";
         }
@@ -280,7 +304,7 @@
             if (!Number.isInteger(idx)) {
                 return;
             }
-            btn.style.cssText = "min-width:38px;height:34px;border-radius:6px;cursor:pointer;" + statusStyle(getQuestionStatus(idx));
+            btn.className = NAV_BUTTON_BASE_CLASS + " " + statusClass(getQuestionStatus(idx));
         });
     }
 
@@ -299,19 +323,25 @@
             : null;
 
         let html = "";
-        html += "<h3>Q" + (questionIndex + 1) + ": " + q.question + "</h3>";
-        html += '<div id="questionOptions">';
+        html += '<article class="rounded-2xl border border-[rgba(212,175,55,0.2)] bg-[rgba(255,255,255,0.03)] p-[25px] shadow-[0_18px_55px_rgba(0,0,0,0.35)] max-[640px]:p-[18px]">';
+        html += '<p class="mb-[10px] mt-0 text-[0.85rem] font-bold uppercase tracking-[0.06em] text-[#d4af37]">Question ' + (questionIndex + 1) + ' of ' + session.quiz.length + "</p>";
+        html += '<h3 class="m-0 text-[clamp(1.25rem,calc(1rem+1vw),1.85rem)] leading-[1.5] text-[#f5f3ef]">Q' + (questionIndex + 1) + ": " + q.question + "</h3>";
+        html += '<div id="questionOptions" class="mt-[22px] grid gap-[10px]">';
 
         q.options.forEach(function (opt, optionIndex) {
             const isChecked = selectedValue === String(optionIndex) ? "checked" : "";
+            const optionClass = isChecked ? OPTION_BASE_CLASS + " " + OPTION_SELECTED_CLASS : OPTION_BASE_CLASS;
+            const indicatorClass = isChecked ? OPTION_INDICATOR_BASE_CLASS + " " + OPTION_INDICATOR_SELECTED_CLASS : OPTION_INDICATOR_BASE_CLASS;
             html += '' +
-                '<label>' +
-                '<input type="radio" name="currentQuestionOption" value="' + optionIndex + '" ' + isChecked + ">" +
-                opt +
-                "</label><br>";
+                '<label class="' + optionClass + '">' +
+                '<input class="absolute opacity-0 pointer-events-none" type="radio" name="currentQuestionOption" value="' + optionIndex + '" ' + isChecked + ">" +
+                '<span class="' + indicatorClass + '" aria-hidden="true"></span>' +
+                '<span class="text-[1rem] leading-[1.5] text-[#f5f3ef]">' + opt + "</span>" +
+                "</label>";
         });
 
-        html += "</div><br>";
+        html += "</div>";
+        html += "</article>";
 
         container.innerHTML = html;
 
@@ -322,6 +352,22 @@
                 const selected = Number(radio.value);
                 session.answers[String(questionIndex)] = selected;
                 SessionManager.updateSession({ answers: session.answers });
+                const optionCards = container.querySelectorAll(".quiz-option");
+                optionCards.forEach(function (card) {
+                    card.className = OPTION_BASE_CLASS;
+                    const indicator = card.querySelector(".quiz-option-indicator");
+                    if (indicator) {
+                        indicator.className = OPTION_INDICATOR_BASE_CLASS;
+                    }
+                });
+                const parentLabel = radio.closest(".quiz-option");
+                if (parentLabel) {
+                    parentLabel.className = OPTION_BASE_CLASS + " " + OPTION_SELECTED_CLASS;
+                    const activeIndicator = parentLabel.querySelector(".quiz-option-indicator");
+                    if (activeIndicator) {
+                        activeIndicator.className = OPTION_INDICATOR_BASE_CLASS + " " + OPTION_INDICATOR_SELECTED_CLASS;
+                    }
+                }
                 updateProgressDisplay();
                 updateNavigationStyles();
                 updateProgressPanel();
@@ -406,6 +452,7 @@
     function startTimer() {
         updateTimerDisplay();
         updateProgressPanel();
+        updateProgressDisplay();
 
         timerInterval = setInterval(function () {
             session.timeRemaining -= 1;

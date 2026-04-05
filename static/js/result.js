@@ -1,296 +1,180 @@
-(function () {
-    const scoreMetric = document.getElementById("scoreMetric");
-    const accuracyMetric = document.getElementById("accuracyMetric");
-    const answeredMetric = document.getElementById("answeredMetric");
-    const unansweredMetric = document.getElementById("unansweredMetric");
-    const timeUsedMetric = document.getElementById("timeUsedMetric");
-    const avgTimeMetric = document.getElementById("avgTimeMetric");
-    const performanceLabel = document.getElementById("performanceLabel");
-    const emptyState = document.getElementById("emptyState");
+const storageKey = 'quizResult';
 
-    const resultsPanel = document.getElementById("resultsPanel");
-    const reviewPanel = document.getElementById("reviewPanel");
-    const reviewBtn = document.getElementById("reviewBtn");
-    const reviewPrevBtn = document.getElementById("reviewPrevBtn");
-    const reviewNextBtn = document.getElementById("reviewNextBtn");
-    const reviewExitBtn = document.getElementById("reviewExitBtn");
-    const reviewIndexDisplay = document.getElementById("reviewIndexDisplay");
-    const reviewQuestionText = document.getElementById("reviewQuestionText");
-    const reviewOptions = document.getElementById("reviewOptions");
-    const reviewUserAnswer = document.getElementById("reviewUserAnswer");
-    const reviewCorrectAnswer = document.getElementById("reviewCorrectAnswer");
-    const reviewExplanationRow = document.getElementById("reviewExplanationRow");
-    const reviewExplanation = document.getElementById("reviewExplanation");
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+  return `${mins}:${secs}`;
+}
 
-    if (
-        !scoreMetric ||
-        !accuracyMetric ||
-        !answeredMetric ||
-        !unansweredMetric ||
-        !timeUsedMetric ||
-        !avgTimeMetric ||
-        !performanceLabel ||
-        !emptyState ||
-        !resultsPanel ||
-        !reviewPanel ||
-        !reviewBtn ||
-        !reviewPrevBtn ||
-        !reviewNextBtn ||
-        !reviewExitBtn ||
-        !reviewIndexDisplay ||
-        !reviewQuestionText ||
-        !reviewOptions ||
-        !reviewUserAnswer ||
-        !reviewCorrectAnswer ||
-        !reviewExplanationRow ||
-        !reviewExplanation
-    ) {
-        return;
-    }
+function getPerformanceTier(accuracy) {
+  if (accuracy >= 80) return { label: 'Advanced Level', color: 'text-lime-300' };
+  if (accuracy >= 50) return { label: 'Intermediate Level', color: 'text-yellow-300' };
+  return { label: 'Beginner Level', color: 'text-pink-200' };
+}
 
-    SessionManager.clearSession();
+function getFeedbackMessage(accuracy) {
+  if (accuracy >= 80) return "Excellent performance! You're mastering this topic.";
+  if (accuracy >= 50) return 'Good effort! Keep practicing to improve.';
+  return 'Needs improvement. Review concepts and try again.';
+}
 
-    let reviewIndex = 0;
-    let reviewQuestions = [];
-    let reviewUserAnswers = {};
+function setEmptyState() {
+  const w = id => document.getElementById(id);
+  w('scoreValue').textContent = '0/0';
+  w('answeredValue').textContent = '0';
+  w('unansweredValue').textContent = '0';
+  w('totalTimeValue').textContent = '00:00';
+  w('avgTimeValue').textContent = '0 sec';
+  w('needsReviewValue').textContent = '0';
+  w('feedbackText').textContent = 'No quiz data available. Please take a quiz first.';
+  w('accuracyValue').textContent = '0%';
+  w('performanceBadge').textContent = 'Beginner Level';
+  document.getElementById('scoreBar').style.width = '0%';
+  document.getElementById('answeredBar').style.width = '0%';
+  document.getElementById('unansweredBar').style.width = '0%';
+  document.getElementById('needsReviewBar').style.width = '0%';
+  const circle = document.getElementById('progressRing');
+  if (circle) {
+    circle.setAttribute('stroke-dasharray', '565.48');
+    circle.setAttribute('stroke-dashoffset', '565.48');
+  }
+  document.getElementById('reviewQuestions').innerHTML = '<p class="text-white/80">No questions to review.</p>';
+}
 
-    function formatTime(totalSeconds) {
-        const safeSeconds = Math.max(0, Math.floor(totalSeconds));
-        const mins = Math.floor(safeSeconds / 60);
-        const secs = safeSeconds % 60;
-        return String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
-    }
+function computeAndRender() {
+  const raw = localStorage.getItem(storageKey);
+  if (!raw) { setEmptyState(); return; }
 
-    function getPerformanceBucket(accuracy) {
-        if (accuracy >= 80) {
-            return { text: "Excellent", className: "excellent" };
-        }
-        if (accuracy >= 60) {
-            return { text: "Good", className: "good" };
-        }
-        if (accuracy >= 40) {
-            return { text: "Average", className: "average" };
-        }
-        return { text: "Needs Improvement", className: "needs-improvement" };
-    }
+  let payload;
+  try { payload = JSON.parse(raw); } catch { setEmptyState(); return; }
 
-    function showEmptyState() {
-        performanceLabel.textContent = "No Data";
-        performanceLabel.className = "performance-label needs-improvement";
-        emptyState.style.display = "block";
-        reviewBtn.style.display = "none";
-    }
+  const questions = Array.isArray(payload.questions) ? payload.questions : [];
+  const totalQuestions = Number(payload.total) || questions.length || 0;
+  let score = Number(payload.score);
+  score = Number.isFinite(score) ? Math.max(0, score) : 0;
+  score = Math.min(score, totalQuestions);
 
-    function clampReviewIndex(index) {
-        if (!Array.isArray(reviewQuestions) || reviewQuestions.length === 0) {
-            return 0;
-        }
-        if (!Number.isInteger(index)) {
-            return 0;
-        }
-        return Math.min(Math.max(index, 0), reviewQuestions.length - 1);
-    }
+  const userAnswers = payload.userAnswers && typeof payload.userAnswers === 'object' ? payload.userAnswers : {};
+  const answered = Math.min(Object.keys(userAnswers).length, totalQuestions);
+  const unanswered = Math.max(totalQuestions - answered, 0);
 
-    function getOptionLabelByIndex(question, optionIndex) {
-        if (!question || !Array.isArray(question.options) || !Number.isInteger(optionIndex)) {
-            return "Not available";
-        }
-        if (optionIndex < 0 || optionIndex >= question.options.length) {
-            return "Not available";
-        }
-        return question.options[optionIndex];
-    }
+  const needsReview = questions.reduce((acc, question, idx) => {
+    const uid = question.id != null ? String(question.id) : String(idx);
+    const user = userAnswers[uid];
+    const correct = question.correct_answer;
+    if (user == null || user === '') return acc;
+    if (String(user).trim() !== String(correct).trim()) return acc + 1;
+    return acc;
+  }, 0);
 
-    function getNumericIndex(value) {
-        if (value === null || value === undefined || value === "") {
-            return null;
-        }
+  const totalTime = Number(payload.totalTime) || 0;
+  const avgTime = totalQuestions > 0 ? Math.round(totalTime / totalQuestions) : 0;
+  const accuracy = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
 
-        const parsed = Number(value);
-        return Number.isInteger(parsed) ? parsed : null;
-    }
+  document.getElementById('scoreValue').textContent = `${score}/${totalQuestions}`;
+  document.getElementById('answeredValue').textContent = String(answered);
+  document.getElementById('unansweredValue').textContent = String(unanswered);
+  document.getElementById('totalTimeValue').textContent = formatTime(totalTime);
+  document.getElementById('avgTimeValue').textContent = `${avgTime} sec`;
+  document.getElementById('needsReviewValue').textContent = String(needsReview);
 
-    function updateReviewNavigationButtons() {
-        reviewPrevBtn.disabled = reviewIndex <= 0;
-        reviewNextBtn.disabled = reviewIndex >= reviewQuestions.length - 1;
-    }
+  const scorePct = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+  const answeredPct = totalQuestions > 0 ? (answered / totalQuestions) * 100 : 0;
+  const unansweredPct = totalQuestions > 0 ? (unanswered / totalQuestions) * 100 : 0;
+  const reviewPct = totalQuestions > 0 ? (needsReview / totalQuestions) * 100 : 0;
 
-    function isReviewModeActive() {
-        return reviewPanel.style.display !== "none";
-    }
+  document.getElementById('scoreBar').style.width = `${Math.min(100, Math.max(0, scorePct))}%`;
+  document.getElementById('answeredBar').style.width = `${Math.min(100, Math.max(0, answeredPct))}%`;
+  document.getElementById('unansweredBar').style.width = `${Math.min(100, Math.max(0, unansweredPct))}%`;
+  document.getElementById('needsReviewBar').style.width = `${Math.min(100, Math.max(0, reviewPct))}%`;
 
-    function isTypingTarget(target) {
-        if (!target) {
-            return false;
-        }
-        const tagName = target.tagName ? target.tagName.toLowerCase() : "";
-        return target.isContentEditable || tagName === "input" || tagName === "textarea" || tagName === "select";
-    }
+  const ring = document.getElementById('progressRing');
+  if (ring) {
+    const radius = Number(ring.getAttribute('r')) || 90;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference * (1 - Math.max(0, Math.min(100, accuracy)) / 100);
+    ring.setAttribute('stroke-dasharray', `${circumference}`);
+    ring.setAttribute('stroke-dashoffset', `${offset}`);
+  }
 
-    function renderReviewQuestion(index) {
-        if (!Array.isArray(reviewQuestions) || reviewQuestions.length === 0) {
-            return;
-        }
+  document.getElementById('accuracyValue').textContent = `${Math.max(0, Math.min(100, accuracy))}%`;
 
-        reviewIndex = clampReviewIndex(index);
-        const question = reviewQuestions[reviewIndex];
-        if (!question || !Array.isArray(question.options)) {
-            return;
-        }
+  const tier = getPerformanceTier(accuracy);
+  const badge = document.getElementById('performanceBadge');
+  badge.textContent = tier.label;
+  badge.className = `mt-4 mb-8 inline-flex px-5 py-2 border rounded-full text-xs font-bold tracking-widest uppercase ${tier.color}`;
 
-        const userAnswerValue = reviewUserAnswers[String(reviewIndex)];
-        const userAnswerIndex = getNumericIndex(userAnswerValue);
-        const correctAnswerIndex = getNumericIndex(question.correct_answer);
+  document.getElementById('feedbackText').textContent = getFeedbackMessage(accuracy);
 
-        reviewIndexDisplay.textContent = "Question " + (reviewIndex + 1) + " of " + reviewQuestions.length;
-        reviewQuestionText.textContent = question.question || "";
+  const reviewQuestionsNode = document.getElementById('reviewQuestions');
+  reviewQuestionsNode.innerHTML = '';
 
-        reviewOptions.textContent = "";
-        question.options.forEach(function (optionText, optionIndex) {
-            let stateClass = "normal_option";
-            if (correctAnswerIndex === optionIndex) {
-                stateClass = "correct_option";
-            } else if (userAnswerIndex === optionIndex && correctAnswerIndex !== userAnswerIndex) {
-                stateClass = "user_wrong_option";
-            }
+  if (!questions.length) {
+    reviewQuestionsNode.innerHTML = '<p class="text-white/80">No questions available for review.</p>';
+  } else {
+    questions.forEach((question, idx) => {
+      const uid = question.id != null ? String(question.id) : String(idx);
+      const userAnswer = userAnswers[uid] ?? 'No answer';
+      const correctAnswer = question.correct_answer ?? 'N/A';
+      const isCorrect = String(userAnswer).trim() === String(correctAnswer).trim();
 
-            const optionNode = document.createElement("li");
-            optionNode.className = stateClass;
-            optionNode.textContent = optionText;
-            reviewOptions.appendChild(optionNode);
-        });
-
-        if (userAnswerIndex === null || !Number.isInteger(userAnswerIndex)) {
-            reviewUserAnswer.textContent = "Not answered";
-        } else {
-            const answerText = getOptionLabelByIndex(question, userAnswerIndex);
-            if (correctAnswerIndex === userAnswerIndex) {
-                reviewUserAnswer.textContent = answerText + " (Correct)";
-            } else {
-                reviewUserAnswer.textContent = answerText + " (Incorrect)";
-            }
-        }
-
-        reviewCorrectAnswer.textContent = getOptionLabelByIndex(question, correctAnswerIndex) + " (Correct)";
-
-        const explanation = typeof question.explanation === "string" ? question.explanation.trim() : "";
-        if (explanation) {
-            reviewExplanation.textContent = explanation;
-            reviewExplanationRow.style.display = "block";
-        } else {
-            reviewExplanation.textContent = "";
-            reviewExplanationRow.style.display = "none";
-        }
-
-        updateReviewNavigationButtons();
-    }
-
-    function startReviewMode() {
-        if (!Array.isArray(reviewQuestions) || reviewQuestions.length === 0) {
-            return;
-        }
-        resultsPanel.style.display = "none";
-        reviewPanel.style.display = "block";
-        reviewIndex = 0;
-        renderReviewQuestion(reviewIndex);
-    }
-
-    function goToNextReviewQuestion() {
-        if (reviewIndex >= reviewQuestions.length - 1) {
-            return;
-        }
-        renderReviewQuestion(reviewIndex + 1);
-    }
-
-    function goToPreviousReviewQuestion() {
-        if (reviewIndex <= 0) {
-            return;
-        }
-        renderReviewQuestion(reviewIndex - 1);
-    }
-
-    function exitReviewMode() {
-        reviewPanel.style.display = "none";
-        resultsPanel.style.display = "block";
-    }
-
-    const stored = localStorage.getItem("quizResult");
-    if (!stored) {
-        showEmptyState();
-        return;
-    }
-
-    try {
-        const result = JSON.parse(stored);
-        const questions = Array.isArray(result.questions) ? result.questions : [];
-        const userAnswers = result.userAnswers && typeof result.userAnswers === "object" ? result.userAnswers : {};
-        const totalQuestions = questions.length > 0 ? questions.length : (Number.isFinite(result.total) ? result.total : 0);
-        const answeredCount = Object.keys(userAnswers).length;
-        const unanswered = Math.max(0, totalQuestions - answeredCount);
-        const score = Number.isFinite(result.score) ? result.score : 0;
-        const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
-        const totalTime = Number.isFinite(result.totalTime) ? result.totalTime : 0;
-        const timeRemaining = Number.isFinite(result.timeRemaining) ? result.timeRemaining : 0;
-        const timeUsed = Math.max(0, totalTime - timeRemaining);
-        const avgTimePerQuestion = answeredCount > 0 ? Math.round(timeUsed / answeredCount) : 0;
-
-        const performance = getPerformanceBucket(accuracy);
-
-        scoreMetric.textContent = score + " / " + totalQuestions;
-        accuracyMetric.textContent = Math.round(accuracy) + "%";
-        answeredMetric.textContent = String(answeredCount);
-        unansweredMetric.textContent = String(unanswered);
-        timeUsedMetric.textContent = formatTime(timeUsed);
-        avgTimeMetric.textContent = avgTimePerQuestion + " sec";
-
-        performanceLabel.textContent = performance.text;
-        performanceLabel.className = "performance-label " + performance.className;
-        emptyState.style.display = "none";
-
-        reviewQuestions = questions;
-        reviewUserAnswers = userAnswers;
-
-        if (!reviewQuestions.length) {
-            reviewBtn.style.display = "none";
-        }
-    } catch (error) {
-        showEmptyState();
-        return;
-    }
-
-    reviewBtn.addEventListener("click", function () {
-        startReviewMode();
+      const block = document.createElement('article');
+      block.className = `rounded-lg p-4 ${isCorrect ? 'border-l-4 border-lime-400 bg-white/5' : 'border-l-4 border-rose-400 bg-white/5'}`;
+      block.innerHTML = `
+        <div class="text-xs text-white/70 mb-1">Question ${idx + 1}</div>
+        <div class="text-sm font-semibold text-white mb-2">${question.question ?? 'Unknown question'}</div>
+        <div class="text-xs text-white/70">Your Answer: <span class="font-semibold ${isCorrect ? 'text-lime-300' : 'text-rose-300'}">${userAnswer}</span></div>
+        <div class="text-xs text-white/70">Correct Answer: <span class="font-semibold text-yellow-300">${correctAnswer}</span></div>
+      `;
+      reviewQuestionsNode.appendChild(block);
     });
+  }
+}
 
-    reviewNextBtn.addEventListener("click", function () {
-        goToNextReviewQuestion();
-    });
+function openReview() {
+  const modal = document.getElementById('reviewModal');
+  const inner = document.getElementById('reviewScrollInner');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  modal.setAttribute('aria-hidden', 'false');
+  // Re-trigger the entry animation every time
+  if (inner) {
+    inner.classList.remove('review-animate');
+    void inner.offsetWidth; // force reflow to reset animation
+    inner.classList.add('review-animate');
+  }
+}
 
-    reviewPrevBtn.addEventListener("click", function () {
-        goToPreviousReviewQuestion();
-    });
+function closeReview() {
+  const modal = document.getElementById('reviewModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  modal.setAttribute('aria-hidden', 'true');
+}
 
-    reviewExitBtn.addEventListener("click", function () {
-        exitReviewMode();
-    });
+function setupHandlers() {
+  document.getElementById('reviewBtn').addEventListener('click', () => {
+    computeAndRender();
+    openReview();
+  });
 
-    function handleReviewKeyboardInput(event) {
-        if (!isReviewModeActive() || isTypingTarget(event.target)) {
-            return;
-        }
+  document.getElementById('closeReview').addEventListener('click', closeReview);
 
-        if (event.key === "ArrowRight") {
-            event.preventDefault();
-            goToNextReviewQuestion();
-            return;
-        }
+  document.getElementById('takeAnother').addEventListener('click', () => {
+    localStorage.removeItem(storageKey);
+    window.location.href = '/quiz-config';
+  });
 
-        if (event.key === "ArrowLeft") {
-            event.preventDefault();
-            goToPreviousReviewQuestion();
-        }
-    }
+  document.getElementById('reviewModal').addEventListener('click', (event) => {
+    if (event.target.id === 'reviewModal') closeReview();
+  });
 
-    document.addEventListener("keydown", handleReviewKeyboardInput);
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeReview();
+  });
+}
 
-})();
+window.addEventListener('DOMContentLoaded', () => {
+  computeAndRender();
+  setupHandlers();
+});

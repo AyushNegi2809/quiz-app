@@ -1,1 +1,461 @@
 @import "tailwindcss";
+
+/* ─── Font ──────────────────────────────────────────────── */
+body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.brand-wordmark {
+    font-family: "Bruno Ace SC", cursive;
+    letter-spacing: 0.02em;
+}
+
+.heading-font {
+    font-family: "Syncopate", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* ─── Monospace for countdown ───────────────────────────── */
+#countdown {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* ─── Gradient text — "Instantly." + score ─────────────── */
+.text-gold-gradient {
+    background: linear-gradient(135deg, #d4af37 0%, #d4af37 45%, #f5d27a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ─── CTA transition (cubic-bezier not in Tailwind) ─────── */
+.cta-transition {
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.22s ease;
+}
+
+/* ─── Keyframe Animations ───────────────────────────────── */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: rotate(2deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(2deg) translateY(-6px);
+    }
+
+    100% {
+        transform: rotate(2deg) translateY(0px);
+    }
+}
+
+@keyframes floatMobile {
+    0% {
+        transform: rotate(0deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(0deg) translateY(-5px);
+    }
+
+    100% {
+        transform: rotate(0deg) translateY(0px);
+    }
+}
+
+@keyframes softGlowShift {
+
+    0%,
+    100% {
+        box-shadow:
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.26),
+            0 14px 38px rgba(0, 0, 0, 0.24),
+            0 0 0 1px rgba(255, 255, 255, 0.04),
+            0 0 36px rgba(255, 244, 214, 0.08),
+            0 0 58px rgba(212, 175, 55, 0.06);
+    }
+
+    50% {
+        box-shadow:
+            inset 0 1.5px 0 rgba(255, 255, 255, 0.3),
+            0 18px 44px rgba(0, 0, 0, 0.26),
+            0 0 0 1px rgba(255, 255, 255, 0.05),
+            0 0 42px rgba(255, 247, 228, 0.1),
+            0 0 68px rgba(212, 175, 55, 0.08);
+    }
+}
+
+@keyframes cardReflection {
+
+    0%,
+    100% {
+        opacity: 0.42;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.58;
+        transform: translateY(1px);
+    }
+}
+
+@keyframes backCardGlowShift {
+
+    0%,
+    100% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.12),
+            0 18px 50px rgba(0, 0, 0, 0.24),
+            0 0 32px rgba(255, 245, 225, 0.05),
+            0 0 52px rgba(212, 175, 55, 0.04);
+    }
+
+    50% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 22px 58px rgba(0, 0, 0, 0.26),
+            0 0 38px rgba(255, 249, 235, 0.07),
+            0 0 60px rgba(212, 175, 55, 0.05);
+    }
+}
+
+@keyframes progressShimmer {
+    0% {
+        transform: translateX(-140%);
+        opacity: 0;
+    }
+
+    18% {
+        opacity: 0.65;
+    }
+
+    55% {
+        opacity: 0.28;
+    }
+
+    100% {
+        transform: translateX(240%);
+        opacity: 0;
+    }
+}
+
+@keyframes processingGlow {
+
+    0%,
+    100% {
+        opacity: 0.92;
+        filter: brightness(0.98);
+    }
+
+    50% {
+        opacity: 1;
+        filter: brightness(1.08);
+    }
+}
+
+@keyframes tagPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 0 14px rgba(212, 175, 55, 0.12);
+        filter: brightness(1);
+    }
+
+    50% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            0 0 18px rgba(212, 175, 55, 0.18);
+        filter: brightness(1.08);
+    }
+}
+
+@keyframes ctaGlowBreath {
+
+    0%,
+    100% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.24),
+            0 0 0 1px rgba(212, 175, 55, 0.08),
+            0 12px 28px rgba(0, 0, 0, 0.2),
+            0 0 24px rgba(212, 175, 55, 0.18);
+    }
+
+    50% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 0 1px rgba(212, 175, 55, 0.12),
+            0 14px 34px rgba(0, 0, 0, 0.22),
+            0 0 32px rgba(212, 175, 55, 0.24);
+    }
+}
+
+@keyframes ctaShineSweep {
+    0% {
+        transform: translateX(-170%) skewX(-22deg);
+        opacity: 0;
+    }
+
+    18% {
+        opacity: 0.55;
+    }
+
+    100% {
+        transform: translateX(240%) skewX(-22deg);
+        opacity: 0;
+    }
+}
+
+/* ─── Animation Composition Classes ────────────────────── */
+.anim-left {
+    opacity: 0;
+    animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+}
+
+.anim-right {
+    opacity: 0;
+    animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+
+.card-float {
+    animation:
+        float 8.6s ease-in-out infinite,
+        softGlowShift 8.6s ease-in-out infinite;
+}
+
+.hero-card-stack {
+    min-height: 370px;
+    perspective: 1200px;
+}
+
+.hero-card-front {
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    transform-origin: center center;
+    position: relative;
+    overflow: hidden;
+    background: rgba(182, 182, 182, 0.12);
+    box-shadow:
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.26),
+        0 14px 38px rgba(0, 0, 0, 0.24),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 0 36px rgba(255, 244, 214, 0.08),
+        0 0 58px rgba(212, 175, 55, 0.06);
+}
+
+.hero-card-front::before,
+.hero-card-back::after {
+    content: "";
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 0;
+    height: 24%;
+    border-radius: inherit;
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0.26) 0%,
+            rgba(255, 255, 255, 0.08) 32%,
+            rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    animation: cardReflection 9s ease-in-out infinite;
+}
+
+.hero-card-back {
+    min-height: 350px;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    top: auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        0 18px 50px rgba(0, 0, 0, 0.24),
+        0 0 32px rgba(255, 245, 225, 0.05),
+        0 0 52px rgba(212, 175, 55, 0.04);
+    opacity: 0.9;
+    transform: scale(0.92) rotate(22deg);
+    filter: none;
+    transition: opacity 0.28s ease, filter 0.28s ease;
+    transform-origin: bottom right;
+    animation:
+        backgroundCardDrift 9.4s ease-in-out infinite,
+        backCardGlowShift 9.4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.hero-card-back::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.16), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+    pointer-events: none;
+}
+
+.ai-progress-fill {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.88) 0%, #d4af37 55%, #f5d27a 100%);
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+    animation: processingGlow 5.8s ease-in-out infinite;
+}
+
+.ai-progress-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 34%;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.5) 45%,
+            rgba(255, 255, 255, 0.12) 72%,
+            rgba(255, 255, 255, 0) 100%);
+    filter: blur(3px);
+    animation: progressShimmer 4.8s ease-in-out infinite;
+}
+
+.ai-process-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.68);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+}
+
+.ai-process-tag-active {
+    color: #f6e3a0;
+    border-color: rgba(212, 175, 55, 0.42);
+    background: rgba(212, 175, 55, 0.12);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 0 16px rgba(212, 175, 55, 0.16);
+    animation: tagPulse 4.4s ease-in-out infinite;
+}
+
+#hero-cta-btn {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(245, 210, 122, 0.1) 42%, rgba(255, 255, 255, 0.04) 100%),
+        transparent;
+    border-color: rgba(255, 255, 255, 0.85);
+
+}
+
+#hero-cta-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -22%;
+    width: 24%;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 244, 214, 0.56) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    pointer-events: none;
+    transform: skewX(-22deg);
+}
+
+
+
+@media (max-width: 920px) {
+    .card-float {
+        animation:
+            floatMobile 8s ease-in-out infinite,
+            softGlowShift 8s ease-in-out infinite;
+    }
+
+    .hero-card-stack {
+        min-height: 350px;
+    }
+
+    .hero-card-back {
+        transform: scale(0.88) rotate(18deg);
+    }
+}
+
+@media (max-width: 540px) {
+    .hero-card-stack {
+        min-height: 320px;
+    }
+
+    .hero-card-back {
+        min-height: 300px;
+    }
+}
+
+@keyframes backgroundCardDrift {
+
+    0%,
+    100% {
+        transform: scale(0.92) rotate(22deg);
+        opacity: 0.88;
+    }
+
+    50% {
+        transform: translate3d(6px, -8px, 0) scale(0.92) rotate(24deg);
+        opacity: 0.94;
+    }
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #120606;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.836);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.753);
+    cursor: grab;
+}
+
+/* ─── Reduced Motion ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

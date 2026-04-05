@@ -1,6 +1,4 @@
 (function () {
-    const TIMER_MINUTES = 1;
-    const TOTAL_TIME_SECONDS = TIMER_MINUTES * 60;
     const QUIZ_ENDPOINT = "/generate-quiz";
 
     const form = document.getElementById("quizForm");
@@ -9,6 +7,9 @@
     const errorPanel = document.getElementById("errorPanel");
     const errorMessage = document.getElementById("errorMessage");
     const retryButton = document.getElementById("retryBtn");
+    const topicSelect = document.getElementById("topic");
+    const difficultySelect = document.getElementById("difficulty");
+    const questionsSelect = document.getElementById("questions");
 
     if (!form) {
         return;
@@ -55,12 +56,16 @@
         const submitBtn = getSubmitButton();
 
         if (loader) {
-            loader.style.display = isLoading ? "block" : "none";
+            loader.style.display = isLoading ? "flex" : "none";
         }
 
         if (submitBtn) {
             submitBtn.disabled = isLoading;
             submitBtn.textContent = isLoading ? "Generating..." : "Generate Quiz";
+        }
+
+        if (form) {
+            form.setAttribute("aria-busy", isLoading ? "true" : "false");
         }
     }
 
@@ -79,6 +84,10 @@
 
         if (errorPanel) {
             errorPanel.style.display = "block";
+            errorPanel.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
         }
     }
 
@@ -97,7 +106,11 @@
     }
 
     function isValidQuizPayload(data) {
-        return Boolean(data) && Array.isArray(data.questions) && data.questions.length > 0;
+        return Boolean(data)
+            && Array.isArray(data.questions)
+            && data.questions.length > 0
+            && Number.isFinite(data.time_limit_seconds)
+            && data.time_limit_seconds > 0;
     }
 
     async function generateQuiz(quizRequest) {
@@ -157,8 +170,8 @@
                 quiz: result.questions,
                 answers: {},
                 currentQuestion: 0,
-                timeRemaining: TOTAL_TIME_SECONDS,
-                totalTime: TOTAL_TIME_SECONDS,
+                timeRemaining: Math.floor(result.time_limit_seconds),
+                totalTime: Math.floor(result.time_limit_seconds),
                 startedAt: Date.now()
             };
 
@@ -184,9 +197,9 @@
 
     function buildQuizRequestFromForm() {
         return {
-            topic: document.getElementById("topic").value,
-            difficulty: document.getElementById("difficulty").value,
-            questions: Number(document.getElementById("questions").value)
+            topic: topicSelect.value,
+            difficulty: difficultySelect.value,
+            questions: Number(questionsSelect.value)
         };
     }
 

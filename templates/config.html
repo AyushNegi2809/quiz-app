@@ -1,65 +1,563 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUIZ CONFIGURATION</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/config.css') }}">
+    <title>QuizAI Configurator</title>
+    <meta name="description"
+        content="Configure your topic, difficulty, and quiz length before generating an AI-powered quiz.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <style>
+        .wheel,
+        .hamster,
+        .hamster div,
+        .spoke {
+            position: absolute;
+        }
+
+        .wheel,
+        .spoke {
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wheel {
+            background: radial-gradient(100% 100% at center, hsla(0, 0%, 60%, 0) 47.8%, hsl(0, 0%, 60%) 48%);
+            z-index: 2;
+        }
+
+        .hamster {
+            animation: hamster 1s ease-in-out infinite;
+            top: 50%;
+            left: calc(50% - 3.5em);
+            width: 7em;
+            height: 3.75em;
+            transform: rotate(4deg) translate(-0.8em, 1.85em);
+            transform-origin: 50% 0;
+            z-index: 1;
+        }
+
+        .hamster__head {
+            animation: hamsterHead 1s ease-in-out infinite;
+            background: hsl(30, 90%, 55%);
+            border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
+            box-shadow: 0 -0.25em 0 hsl(30, 90%, 80%) inset,
+                0.75em -1.55em 0 hsl(30, 90%, 90%) inset;
+            top: 0;
+            left: -2em;
+            width: 2.75em;
+            height: 2.5em;
+            transform-origin: 100% 50%;
+        }
+
+        .hamster__ear {
+            animation: hamsterEar 1s ease-in-out infinite;
+            background: hsl(0, 90%, 85%);
+            border-radius: 50%;
+            box-shadow: -0.25em 0 hsl(30, 90%, 55%) inset;
+            top: -0.25em;
+            right: -0.25em;
+            width: 0.75em;
+            height: 0.75em;
+            transform-origin: 50% 75%;
+        }
+
+        .hamster__eye {
+            animation: hamsterEye 1s linear infinite;
+            background-color: hsl(0, 0%, 0%);
+            border-radius: 50%;
+            top: 0.375em;
+            left: 1.25em;
+            width: 0.5em;
+            height: 0.5em;
+        }
+
+        .hamster__nose {
+            background: hsl(0, 90%, 75%);
+            border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
+            top: 0.75em;
+            left: 0;
+            width: 0.2em;
+            height: 0.25em;
+        }
+
+        .hamster__body {
+            animation: hamsterBody 1s ease-in-out infinite;
+            background: hsl(30, 90%, 90%);
+            border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
+            box-shadow: 0.1em 0.75em 0 hsl(30, 90%, 55%) inset,
+                0.15em -0.5em 0 hsl(30, 90%, 80%) inset;
+            top: 0.25em;
+            left: 2em;
+            width: 4.5em;
+            height: 3em;
+            transform-origin: 17% 50%;
+            transform-style: preserve-3d;
+        }
+
+        .hamster__limb--fr,
+        .hamster__limb--fl {
+            clip-path: polygon(0 0, 100% 0, 70% 80%, 60% 100%, 0% 100%, 40% 80%);
+            top: 2em;
+            left: 0.5em;
+            width: 1em;
+            height: 1.5em;
+            transform-origin: 50% 0;
+        }
+
+        .hamster__limb--fr {
+            animation: hamsterFRLimb 1s linear infinite;
+            background: linear-gradient(hsl(30, 90%, 80%) 80%, hsl(0, 90%, 75%) 80%);
+            transform: rotate(15deg) translateZ(-1px);
+        }
+
+        .hamster__limb--fl {
+            animation: hamsterFLLimb 1s linear infinite;
+            background: linear-gradient(hsl(30, 90%, 90%) 80%, hsl(0, 90%, 85%) 80%);
+            transform: rotate(15deg);
+        }
+
+        .hamster__limb--br,
+        .hamster__limb--bl {
+            border-radius: 0.75em 0.75em 0 0;
+            clip-path: polygon(0 0, 100% 0, 100% 30%, 70% 90%, 70% 100%, 30% 100%, 40% 90%, 0% 30%);
+            top: 1em;
+            left: 2.8em;
+            width: 1.5em;
+            height: 2.5em;
+            transform-origin: 50% 30%;
+        }
+
+        .hamster__limb--br {
+            animation: hamsterBRLimb 1s linear infinite;
+            background: linear-gradient(hsl(30, 90%, 80%) 90%, hsl(0, 90%, 75%) 90%);
+            transform: rotate(-25deg) translateZ(-1px);
+        }
+
+        .hamster__limb--bl {
+            animation: hamsterBLLimb 1s linear infinite;
+            background: linear-gradient(hsl(30, 90%, 90%) 90%, hsl(0, 90%, 85%) 90%);
+            transform: rotate(-25deg);
+        }
+
+        .hamster__tail {
+            animation: hamsterTail 1s linear infinite;
+            background: hsl(0, 90%, 85%);
+            border-radius: 0.25em 50% 50% 0.25em;
+            box-shadow: 0 -0.2em 0 hsl(0, 90%, 75%) inset;
+            top: 1.5em;
+            right: -0.5em;
+            width: 1em;
+            height: 0.5em;
+            transform: rotate(30deg) translateZ(-1px);
+            transform-origin: 0.25em 0.25em;
+        }
+
+        .spoke {
+            animation: spoke 1s linear infinite;
+            background: radial-gradient(100% 100% at center, hsl(0, 0%, 60%) 4.8%, hsla(0, 0%, 60%, 0) 5%),
+                linear-gradient(hsla(0, 0%, 55%, 0) 46.9%, hsl(0, 0%, 65%) 47% 52.9%, hsla(0, 0%, 65%, 0) 53%) 50% 50% / 99% 99% no-repeat;
+        }
+
+        @keyframes hamster {
+
+            from,
+            to {
+                transform: rotate(4deg) translate(-0.8em, 1.85em);
+            }
+
+            50% {
+                transform: rotate(0) translate(-0.8em, 1.85em);
+            }
+        }
+
+        @keyframes hamsterHead {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(0);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(8deg);
+            }
+        }
+
+        @keyframes hamsterEye {
+
+            from,
+            90%,
+            to {
+                transform: scaleY(1);
+            }
+
+            95% {
+                transform: scaleY(0);
+            }
+        }
+
+        @keyframes hamsterEar {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(0);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(12deg);
+            }
+        }
+
+        @keyframes hamsterBody {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(0);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        @keyframes hamsterFRLimb {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(50deg) translateZ(-1px);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(-30deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes hamsterFLLimb {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(-30deg);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(50deg);
+            }
+        }
+
+        @keyframes hamsterBRLimb {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(-60deg) translateZ(-1px);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(20deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes hamsterBLLimb {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(20deg);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(-60deg);
+            }
+        }
+
+        @keyframes hamsterTail {
+
+            from,
+            25%,
+            50%,
+            75%,
+            to {
+                transform: rotate(30deg) translateZ(-1px);
+            }
+
+            12.5%,
+            37.5%,
+            62.5%,
+            87.5% {
+                transform: rotate(10deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes spoke {
+            from {
+                transform: rotate(0);
+            }
+
+            to {
+                transform: rotate(-1turn);
+            }
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-mark-icon {
+            display: block;
+            width: 2.5rem;
+            height: 2.5rem;
+            object-fit: contain;
+        }
+    </style>
 </head>
 
-<body>
-
-    <div class="container">
-        <h1>Quiz Configurations</h1>
-
-        <div id="quizContainer">
-            <form id="quizForm">
-
-                <div>
-                    <label>Select Topic: </label>
-                    <select id="topic">
-                        <option value="HTML">HTML</option>
-                        <option value="CSS">CSS</option>
-                        <option value="Javascript">Javascript</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Select Difficulty: </label>
-                    <select id="difficulty">
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="advance">Advance</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label>Select Number of Questions: </label>
-                    <select id="questions">
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                    </select>
-                </div>
-
-                <div id="quizLoader">Generating quiz...</div>
-
-                <br>
-                <button type="submit">Generate Quiz</button>
-
-            </form>
+<body
+    class="m-0 h-full overflow-hidden scheme-dark font-Manrope,sans-serif text-[#fdf4f1] [background:radial-gradient(circle_at_top_left,rgba(212,175,55,0.14),transparent_24%),radial-gradient(circle_at_85%_15%,rgba(128,0,32,0.26),transparent_22%),linear-gradient(160deg,#0e0404_0%,#190807_54%,#110607_100%)] max-[980px]:overflow-y-auto">
+    <main
+        class="relative flex h-dvh flex-col overflow-hidden px-[1.4rem] py-[0.45rem] max-[980px]:h-auto max-[980px]:min-h-dvh max-[980px]:p-5">
+        <div
+            class="pointer-events-none absolute -left-16 top-16 h-64 w-64 rounded-full bg-[rgba(212,175,55,0.14)] opacity-80 blur-[42px]">
+        </div>
+        <div
+            class="pointer-events-none absolute right-[4%] top-32 h-80 w-80 rounded-full bg-[rgba(120,14,34,0.18)] opacity-80 blur-[42px]">
+        </div>
+        <div
+            class="pointer-events-none absolute -bottom-8 left-[40%] h-72 w-72 rounded-full bg-[rgba(255,255,255,0.06)] opacity-80 blur-[42px]">
         </div>
 
-        <div id="errorPanel" role="alert" aria-live="polite">
-            <p id="errorMessage">&#9888; Unable to generate quiz right now. Please try again.</p>
-            <button type="button" id="retryBtn">Retry</button>
+        <div class="relative z-1 mx-auto flex w-full max-w-[1240px] flex-1 flex-col">
+            <header class="mb-5 flex items-center justify-between gap-4 pt-2 max-[640px]:mb-6 max-[640px]:flex-col max-[640px]:items-stretch">
+                <a href="/" aria-label="Back to QuizAI home" class="brand-mark no-underline">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SpinIQ logo"
+                        class="brand-mark-icon" />
+                    <p class="brand-wordmark m-0 text-[1.4rem] text-[#C63AC0]">Spin<span class="text-[#7444E3]">IQ</span></p>
+                </a>
+            </header>
+
+            <section class="flex min-h-0 flex-1 items-stretch gap-3 max-[980px]:flex-col">
+                <article
+                    class="relative h-[clamp(450px,62vh,440px)] min-w-0 flex-[1.05] overflow-hidden rounded-[32px] border border-[#d4af37b3] bg-[rgba(33,12,10,0.72)] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-[18px] max-[980px]:h-auto max-[640px]:rounded-[26px] max-[640px]:p-[1.3rem]">
+                    <div
+                        class="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(212,175,55,0.08),transparent_42%,rgba(255,255,255,0.02))]">
+                    </div>
+                    <div class="relative z-10">
+                        <span
+                            class="inline-flex items-center gap-[0.55rem] rounded-full border border-[#d4af3733] bg-[rgba(255,255,255,0.05)] px-[0.68rem] py-[0.34rem] font-['Space_Grotesk',sans-serif] text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#d4af37]">Quiz
+                            setup</span>
+                        <h1
+                            class="heading-font mt-4 mb-4 max-w-full text-[2.2rem] leading-[0.96] tracking-[-0.06em] max-[640px]:text-[clamp(2.3rem,11vw,3.4rem)]">
+                            Set up your <span class="text-[#f0ca5c]">perfect quiz.</span>
+                        </h1>
+                        <p class="mb-4 max-w-2xl text-[0.86rem] leading-[1.42] text-[rgba(253,244,241,0.7)]">
+                            Pick your topic, set the challenge level, choose how long you want to practice, and let SpinIQ generate a focused quiz in seconds.
+                        </p>
+
+                        <div class="mt-[0.45rem] grid gap-4">
+                            <div
+                                class="flex items-start gap-3 border rounded-2xl border-[#d4af37b3] bg-[#ffffff0a] px-[0.7rem] py-[0.45rem]">
+                                <span
+                                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-[#d4af3726] bg-[#d4af371f] text-[0.72rem] font-bold text-[#d4af37]">01</span>
+                                <div>
+                                    <strong class="mb-[0.06rem] block text-[0.82rem]">Targeted practice</strong>
+                                    <p class="m-0 text-[0.76rem] leading-[1.3] text-[rgba(253,244,241,0.52)]">Choose a
+                                        specific topic so the quiz stays relevant to what you want to improve right now.</p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex items-start gap-3 rounded-2xl border border-[#d4af37b3] bg-[#ffffff0a] px-[0.7rem] py-[0.45rem]">
+                                <span
+                                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-[#d4af3726] bg-[#d4af371f] text-[0.72rem] font-bold text-[#d4af37]">02</span>
+                                <div>
+                                    <strong class="mb-[0.06rem] block text-[0.82rem]">Right-sized difficulty</strong>
+                                    <p class="m-0 text-[0.76rem] leading-[1.3] text-[rgba(253,244,241,0.52)]">Start
+                                        with beginner fundamentals or push deeper with more advanced question sets when you're ready.</p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex items-start rounded-2xl gap-3 border border-[#d4af37b3] bg-[#ffffff0a] px-[0.7rem] py-[0.45rem]">
+                                <span
+                                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-[#d4af3726] bg-[#d4af371f] text-[0.72rem] font-bold text-[#d4af37]">03</span>
+                                <div>
+                                    <strong class="mb-[0.06rem] block text-[0.82rem]">Fast feedback loop</strong>
+                                    <p class="m-0 text-[0.76rem] leading-[1.3] text-[rgba(253,244,241,0.52)]">Generate,
+                                        answer, review, and repeat without leaving the flow. The whole setup takes less than a minute.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="flex flex-[0.95] min-w-[390px] max-[980px]:block max-[980px]:min-w-0">
+                    <div id="quizContainer"
+                        class="relative flex h-[clamp(450px,62vh,440px)] w-full flex-col overflow-hidden rounded-[32px] border border-[#d4af37b3] bg-[rgba(33,12,10,0.72)] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-[18px] max-[980px]:h-auto max-[640px]:rounded-[26px] max-[640px]:p-[1.3rem]">
+                        <div
+                            class="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(212,175,55,0.08),transparent_42%,rgba(255,255,255,0.02))]">
+                        </div>
+                        <div class="relative z-10">
+                            <div class="mb-[0.45rem]">
+                                <h2
+                                    class="heading-font my-2 text-[1.45rem] leading-[1.05] tracking-[-0.04em]">
+                                    Configure your next session</h2>
+                                <p class="mt-[0.2rem] mb-2 text-[0.82rem] leading-[1.35] text-[rgba(253,244,241,0.7)]">
+                                    Every choice updates the session plan below so you know exactly what kind of quiz you're about to generate.
+                                </p>
+                            </div>
+
+                            <form id="quizForm" novalidate class="block">
+                                <div class="grid gap-[0.42rem]">
+                                    <div
+                                        class="rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2">
+                                        <label for="topic" class="mb-[0.2rem] block text-[0.82rem] font-bold">Select
+                                            Topic</label>
+                                        <select id="topic" name="topic"
+                                            class="w-full rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.9)] px-3 py-[0.45rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition duration-200 ease-in-out focus:-translate-y-px">
+                                            <option value="HTML">HTML</option>
+                                            <option value="CSS">CSS</option>
+                                            <option value="Javascript">Javascript</option>
+                                        </select>
+                                    </div>
+
+                                    <div
+                                        class="rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2">
+                                        <label for="difficulty"
+                                            class="mb-[0.2rem] block text-[0.82rem] font-bold">Select
+                                            Difficulty</label>
+                                        <select id="difficulty" name="difficulty"
+                                            class="w-full rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.9)] px-3 py-[0.45rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition duration-200 ease-in-out focus:-translate-y-px">
+                                            <option value="beginner">Beginner</option>
+                                            <option value="intermediate">Intermediate</option>
+                                            <option value="advance">Advance</option>
+                                        </select>
+                                    </div>
+
+                                    <div
+                                        class="rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2">
+                                        <label for="questions"
+                                            class="mb-[0.2rem] block text-[0.82rem] font-bold">Select Number of
+                                            Questions</label>
+                                        <select id="questions" name="questions"
+                                            class="w-full rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.9)] px-3 py-[0.45rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition duration-200 ease-in-out focus:-translate-y-px">
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mt-0 flex items-center justify-center pt-[0.55rem]">
+                                    <button type="submit"
+                                        class="brand-wordmark w-full cursor-pointer rounded-2xl bg-transparent px-4 py-[0.68rem] my-4 text-[1rem] text-[#ffffff] border-2 border-[#fde07f] duration-300 ease-in-out disabled:cursor-progress disabled:opacity-75 hover:bg-[#d4af37] hover:border-[#d4af37] hover:text-[#000000] hover:tracking-widest disabled:transform-none">Generate Quiz
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="errorPanel" role="alert" aria-live="assertive" class="mt-4 hidden">
+                        <div
+                            class="relative overflow-hidden rounded-[32px] border border-[rgba(255,159,159,0.18)] bg-[rgba(60,16,16,0.82)] p-[1.15rem] shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-[18px]">
+                            <div
+                                class="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(212,175,55,0.08),transparent_42%,rgba(255,255,255,0.02))]">
+                            </div>
+                            <div class="relative z-10">
+                                <div class="flex items-start gap-[0.8rem]">
+                                    <span
+                                        class="inline-flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-2xl border border-[rgba(255,159,159,0.18)] bg-[rgba(255,159,159,0.12)] font-extrabold text-[#ff9f9f]">!</span>
+                                    <div>
+                                        <h3 class="mt-0 mb-[0.3rem] text-base">Quiz generation hit a problem</h3>
+                                        <p id="errorMessage" class="m-0 leading-[1.65] text-[rgba(253,244,241,0.82)]">
+                                            Unable to generate quiz right now. Please try again.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button type="button" class="primary-cta mt-4 w-full cursor-pointer rounded-2xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.06)] px-4 py-[0.95rem] font-bold text-[#fdf4f1]"
+                                    id="retryBtn">Retry generation</button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    <!--? HAMSTER LOADER -->
+    <div id="quizLoader" role="status" aria-live="polite" aria-label="Generating quiz"
+        class="fixed inset-0 z-1000 hidden items-center justify-center bg-[rgba(10,3,4,0.45)] backdrop-blur-lg">
+        <div aria-hidden="true" class="relative mx-auto text-[14px] [--dur:1s] h-[13em] w-[13em]">
+            <div class="wheel"></div>
+            <div class="hamster">
+                <div class="hamster__body">
+                    <div class="hamster__head">
+                        <div class="hamster__ear"></div>
+                        <div class="hamster__eye"></div>
+                        <div class="hamster__nose"></div>
+                    </div>
+                    <div class="hamster__limb hamster__limb--fr"></div>
+                    <div class="hamster__limb hamster__limb--fl"></div>
+                    <div class="hamster__limb hamster__limb--br"></div>
+                    <div class="hamster__limb hamster__limb--bl"></div>
+                    <div class="hamster__tail"></div>
+                </div>
+            </div>
+            <div class="spoke"></div>
         </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/sessionManager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
-
 </body>
 
 </html>

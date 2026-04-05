@@ -1,70 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Performance Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+    <title>Quiz Results</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .brand-wordmark {
+            font-family: "Bruno Ace SC", cursive;
+            letter-spacing: 0.02em;
+        }
+
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.55);
+        }
+
+        .progress-ring-svg {
+            transform: scaleX(-1);
+        }
+
+        /* Hide scrollbar but keep scroll functional */
+        .review-scroll-inner {
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
+        }
+
+        .review-scroll-inner::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
+        }
+
+        /* Scroll hint arrow */
+        .scroll-hint {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            padding: 0.75rem 0 0.25rem;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            background: linear-gradient(to bottom, transparent, rgba(33, 12, 10, 0.95) 60%);
+        }
+
+        .scroll-hint.hidden-hint {
+            opacity: 0;
+        }
+
+        @keyframes bounceDown {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(6px);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-hint svg {
+                animation: none;
+            }
+        }
+
+        .scroll-hint svg {
+            animation: bounceDown 1.2s ease-in-out infinite;
+        }
+
+        /* Review panel entry animation */
+        #reviewModal {
+            perspective: 1400px;
+        }
+
+        @keyframes reviewEntry {
+            from {
+                opacity: 0;
+                transform: translateY(35%) scale(0.1);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .review-animate {
+            animation: reviewEntry 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .review-animate {
+                animation: none;
+            }
+        }
+    </style>
+
 </head>
-<body>
-    <section class="dashboard-card">
-        <div id="resultsPanel">
-            <h1>Quiz Performance Dashboard</h1>
-            <div id="performanceLabel" class="performance-label"></div>
 
-            <div class="metrics-grid">
-                <article class="metric-item">
-                    <p class="metric-title">Score</p>
-                    <p id="scoreMetric" class="metric-value">0 / 0</p>
-                </article>
-                <article class="metric-item">
-                    <p class="metric-title">Accuracy</p>
-                    <p id="accuracyMetric" class="metric-value">0%</p>
-                </article>
-                <article class="metric-item">
-                    <p class="metric-title">Answered Questions</p>
-                    <p id="answeredMetric" class="metric-value">0</p>
-                </article>
-                <article class="metric-item">
-                    <p class="metric-title">Unanswered Questions</p>
-                    <p id="unansweredMetric" class="metric-value">0</p>
-                </article>
-                <article class="metric-item">
-                    <p class="metric-title">Total Time Used</p>
-                    <p id="timeUsedMetric" class="metric-value">00:00</p>
-                </article>
-                <article class="metric-item">
-                    <p class="metric-title">Average Time per Question</p>
-                    <p id="avgTimeMetric" class="metric-value">0 sec</p>
-                </article>
+<body
+    class="min-h-screen bg-[linear-gradient(135deg,#0e0404_0%,#190807_50%,#110607_100%)] text-[#fdf4f1] flex items-center justify-center p-5 overflow-hidden">
+
+    <div class="flex gap-6 w-full max-w-7xl">
+
+        <!--^ LEFT PANEL: ACCURACY CIRCLE -->
+        <section
+            class="bg-[rgba(33,12,10,0.72)] backdrop-blur-xl border border-[rgba(212,175,55,0.2)] rounded-[24px] p-10 flex flex-col items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden w-[50vw]">
+            <h1 class="brand-wordmark text-[2.5rem] font-extrabold text-center leading-tight">Quiz Performance <span class="text-yellow-300">Dashboard</span></h1>
+            <div class="relative w-52 h-52 my-8">
+                <svg class="progress-ring-svg" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="90" stroke="rgba(255,255,255,0.15)" stroke-width="8" fill="none">
+                    </circle>
+                    <circle id="progressRing" cx="100" cy="100" r="90" stroke="#d4af37" stroke-width="8" fill="none"
+                        stroke-linecap="round" stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <div id="accuracyValue" class="text-5xl lg:text-6xl font-extrabold text-yellow-300">0%</div>
+                    <div class="text-[30px] text-white/70">Accuracy</div>
+                </div>
+            </div>
+            <span id="performanceBadge"
+                class="mt-4 mb-8 inline-flex px-5 py-2 border rounded-full text-xs font-bold tracking-widest uppercase text-yellow-300">Beginner
+                Level</span>
+        </section>
+
+        <!--^ RIGHT PANEL: METRICS & ACTIONS -->
+        <section
+            class="bg-[rgba(33,12,10,0.72)] backdrop-blur-xl border border-[rgba(212,175,55,0.2)] rounded-[24px] p-8 lg:p-10 flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-auto w-[50vw]">
+            <div class="brand-wordmark text-[20px] font-extrabold tracking-widest uppercase text-white mb-4">Performance Metrics
             </div>
 
-            <p id="emptyState">No result found. Please complete a quiz first.</p>
+            <!-- METRICS GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-5 w-full">
+                <!-- Score -->
+                <div
+                    class="bg-[rgba(255,255,255,0.03)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
+                    <div class="text-xs font-semibold tracking-wide uppercase text-yellow-300 mb-2">Score</div>
+                    <div id="scoreValue" class="text-3xl lg:text-4xl font-extrabold text-white">0/0</div>
+                    <div class="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                        <div id="scoreBar"
+                            class="h-full bg-linear-to-r from-yellow-400 to-[#e8c547] w-0 transition-all duration-500 rounded-full">
+                        </div>
+                    </div>
+                </div>
 
-            <div class="actions">
-                <a href="/quiz-config">Take Another Quiz</a>
-                <button type="button" id="reviewBtn">Review Questions</button>
+                <!-- Answered -->
+                <div
+                    class="bg-[rgba(255,255,255,0.03)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
+                    <div class="text-xs font-semibold tracking-wide uppercase text-yellow-300 mb-2">Answered</div>
+                    <div id="answeredValue" class="text-3xl lg:text-4xl font-extrabold text-white">0</div>
+                    <div class="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                        <div id="answeredBar"
+                            class="h-full bg-linear-to-r from-yellow-400 to-[#e8c547] w-0 transition-all duration-500 rounded-full">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unanswered -->
+                <div
+                    class="bg-[rgba(255,255,255,0.03)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
+                    <div class="text-xs font-semibold tracking-wide uppercase text-yellow-300 mb-2">Unanswered</div>
+                    <div id="unansweredValue" class="text-3xl lg:text-4xl font-extrabold text-white">0</div>
+                    <div class="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                        <div id="unansweredBar"
+                            class="h-full bg-linear-to-r from-yellow-400 to-[#e8c547] w-0 transition-all duration-500 rounded-full">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Time -->
+                <div
+                    class="bg-[rgba(255,255,255,0.03)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
+                    <div class="text-xs font-semibold tracking-wide uppercase text-yellow-300 mb-2">Total Time Used
+                    </div>
+                    <div id="totalTimeValue" class="text-3xl lg:text-4xl font-extrabold text-white">00:00</div>
+                    <div class="h-1 mt-2"></div>
+                </div>
+
+                <!-- Avg Time -->
+                <div
+                    class="bg-[rgba(255,255,255,0.03)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
+                    <div class="text-xs font-semibold tracking-wide uppercase text-yellow-300 mb-2">Avg Time /
+                        Question</div>
+                    <div id="avgTimeValue" class="text-3xl lg:text-4xl font-extrabold text-white">0 sec</div>
+                    <div class="h-1 mt-2"></div>
+                </div>
+
+                <!-- Needs Review -->
+                <div
+                    class="bg-[rgba(255,255,255,0.03)] border border-[rgba(212,175,55,0.15)] rounded-xl p-4 text-center">
+                    <div class="text-xs font-semibold tracking-wide uppercase text-yellow-300 mb-2">Questions
+                        Needing Review</div>
+                    <div id="needsReviewValue" class="text-3xl lg:text-4xl font-extrabold text-white">0</div>
+                    <div class="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                        <div id="needsReviewBar"
+                            class="h-full bg-linear-to-r from-yellow-400 to-[#e8c547] w-0 transition-all duration-500 rounded-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FEEDBACK -->
+            <div class="bg-[rgba(212,175,55,0.1)] border border-[rgba(212,175,55,0.3)] rounded-xl p-4 mb-5">
+                <div class="brand-wordmark text-base font-bold text-yellow-300 mb-2">📊 Performance Feedback</div>
+                <p id="feedbackText" class="text-base text-white/85">Loading feedback...</p>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button id="takeAnother"
+                    class="quiz-action-btn primary-cta py-3 rounded-lg border border-yellow-400/50 text-yellow-300 font-bold uppercase tracking-wide bg-yellow-500/10 hover:bg-yellow-500/20 transition text-center">Take
+                    Another Quiz</button>
+                <button id="reviewBtn"
+                    class="quiz-action-btn primary-cta py-3 rounded-lg border border-yellow-400/50 text-yellow-300 font-bold uppercase tracking-wide bg-yellow-500/10 hover:bg-yellow-500/20 transition text-center">Review
+                    Questions</button>
+            </div>
+        </section>
+    </div>
+
+    <!--& REVIEW SECTION -->
+    <div id="reviewModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-md items-center justify-center p-5 hidden z-50">
+        <div id="reviewScrollInner"
+            class="review-scroll-inner relative bg-[rgba(33,12,10,0.95)] border border-[rgba(212,175,55,0.2)] rounded-2xl w-full max-w-3xl max-h-[80vh] overflow-y-auto p-8">
+            <button id="closeReview"
+                class="absolute top-4 right-4 text-yellow-300 text-3xl hover:text-yellow-200">&times;</button>
+            <h2 class="text-2xl font-extrabold text-yellow-300 mb-4">Question Review</h2>
+            <div id="reviewQuestions" class="space-y-3"></div>
+
+            <!-- Scroll hint arrow -->
+            <div id="scrollHint" class="scroll-hint" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 24 32" fill="none"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 5l6 6 6-6" stroke="rgba(212,175,55,1)" />
+                    <path d="M6 14l6 6 6-6" stroke="rgba(212,175,55,1)" />
+                </svg>
             </div>
         </div>
+    </div>
 
-        <div id="reviewPanel">
-            <h2>Review Questions</h2>
-            <p id="reviewIndexDisplay" class="review-meta">Question 1 of 1</p>
-            <h3 id="reviewQuestionText"></h3>
-            <ul id="reviewOptions"></ul>
-            <p class="review-meta">Your Answer: <span id="reviewUserAnswer"></span></p>
-            <p class="review-meta">Correct Answer: <span id="reviewCorrectAnswer"></span></p>
-            <p id="reviewExplanationRow" class="review-meta" style="display:none;">Explanation: <span id="reviewExplanation"></span></p>
+    <script src="/static/js/result.js"></script>
 
-            <div class="review-nav">
-                <button type="button" id="reviewPrevBtn">Previous</button>
-                <button type="button" id="reviewNextBtn">Next</button>
-                <button type="button" id="reviewExitBtn">Exit Review</button>
-            </div>
-        </div>
-    </section>
+    <script>
+        // Hide scroll hint once user scrolls
+        (function () {
+            const inner = document.getElementById('reviewScrollInner');
+            const hint = document.getElementById('scrollHint');
+            if (!inner || !hint) return;
+            inner.addEventListener('scroll', function () {
+                const atBottom = inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 8;
+                hint.classList.toggle('hidden-hint', inner.scrollTop > 20 || atBottom);
+            }, { passive: true });
+        })();
+    </script>
 
-    <script src="{{ url_for('static', filename='js/sessionManager.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/result.js') }}"></script>
 </body>
+
 </html>

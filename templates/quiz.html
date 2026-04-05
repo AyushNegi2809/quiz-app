@@ -1,27 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Inter:wght@300;400;500;600;700;800;900&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
 </head>
-<body>
-    <h1>Quiz Started</h1>
-    <h2 id="timerDisplay">Time Left: 00:00</h2>
-    <h3 id="progress">Answered: 0 / 0</h3>
-    <section id="smartPanel">
-        <p id="panelProgress">Progress: 0 / 0</p>
-        <p id="panelRemaining">Remaining: 0</p>
-        <p id="panelTimeLeft">Time Left: 00:00</p>
-        <p id="panelAvgTime">Average Time per Question: 0 sec</p>
-        <div id="timeWarning"></div>
-    </section>
+<body class="m-0 h-full overflow-hidden font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif] text-[#f5f3ef] [background:radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_30%),radial-gradient(circle_at_top_right,rgba(255,255,255,0.06),transparent_25%),linear-gradient(180deg,#10131a_0%,#0a0c10_100%)]">
+    <div class="flex h-screen flex-col">
+        <header class="sticky top-0 z-20 shrink-0 border-b border-[rgba(212,175,55,0.28)] bg-[rgba(10,12,16,0.92)] px-6 pt-4 pb-[14px] shadow-[0_10px_24px_rgba(0,0,0,0.22)] backdrop-blur-[18px] max-[640px]:px-4 max-[640px]:pt-[14px] max-[640px]:pb-3">
+            <div class="grid grid-cols-[minmax(180px,1fr)_auto_minmax(220px,1fr)] items-center gap-4 max-[960px]:grid-cols-1 max-[960px]:text-center">
+                <div class="max-[960px]:justify-self-center">
+                    <h1 class="m-0 text-[1.2rem] font-bold tracking-[0.02em]">Quiz in Progress</h1>
+                    <p class="mt-[6px] mb-0 text-[0.9rem] text-[#b9bcc8]">Stay focused and keep your momentum.</p>
+                </div>
+                <div class="flex justify-center">
+                    <h2 id="timerDisplay" class="m-0 text-[clamp(1.8rem,calc(2vw+1rem),2.7rem)] font-extrabold tracking-[0.06em] text-[#d4af37] [text-shadow:0_0_18px_rgba(212,175,55,0.25)] transition-[color,text-shadow,transform] duration-200 ease-in-out">Time Left: 00:00</h2>
+                </div>
+                <div class="flex items-center justify-end gap-[14px] max-[960px]:justify-self-center max-[960px]:flex-col">
+                    <h3 id="progress" class="m-0 text-right text-[0.95rem] text-[#b9bcc8]">Answered: 0 / 0</h3>
+                    <form id="quizForm" class="m-0">
+                        <button type="submit" class="primary-cta cursor-pointer rounded-full border-0 bg-[linear-gradient(135deg,#f5df90_0%,#d4af37_45%,#b8860b_100%)] px-[22px] py-3 text-[0.95rem] font-bold text-[#16130b] shadow-[0_14px_24px_rgba(212,175,55,0.22)] transition-[transform,box-shadow,opacity] duration-200 ease-in-out hover:-translate-y-px hover:shadow-[0_18px_26px_rgba(212,175,55,0.28)] disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none">Submit Quiz</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-[14px] h-2 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]" aria-hidden="true">
+                <div id="progressBarFill" class="h-full w-0 rounded-full bg-[linear-gradient(90deg,rgba(212,175,55,0.78),#f5df90)] shadow-[0_0_16px_rgba(212,175,55,0.24)] transition-[width] duration-200 ease-in-out"></div>
+            </div>
+        </header>
 
-    <form id="quizForm">
-        <div id="quizContainer"></div>
-        <button type="submit">Submit Quiz</button>
-    </form>
+        <main class="grid min-h-0 flex-1 grid-cols-[minmax(0,7fr)_minmax(260px,3fr)] items-start gap-6 overflow-y-auto px-6 pt-7 pb-8 max-[960px]:grid-cols-1 max-[640px]:px-4 max-[640px]:pt-5 max-[640px]:pb-7">
+            <section class="min-w-0">
+                <div id="quizContainer" class="min-h-80"></div>
+            </section>
+
+            <aside class="min-w-0">
+                <section id="smartPanel" class="sticky top-28 rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(18,20,26,0.96)] p-5 shadow-[0_18px_55px_rgba(0,0,0,0.35)] max-[960px]:static max-[640px]:p-4">
+                    <div id="questionNavigatorMount"></div>
+                    <div class="mt-4 grid gap-[10px]">
+                        <p id="panelProgress" class="m-0 rounded-xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] px-[14px] py-3 text-[0.92rem] text-[#b9bcc8]">Progress: 0 / 0</p>
+                        <p id="panelRemaining" class="m-0 rounded-xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] px-[14px] py-3 text-[0.92rem] text-[#b9bcc8]">Remaining: 0</p>
+                        <p id="panelTimeLeft" class="m-0 rounded-xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] px-[14px] py-3 text-[0.92rem] text-[#b9bcc8]">Time Left: 00:00</p>
+                        <p id="panelAvgTime" class="m-0 rounded-xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] px-[14px] py-3 text-[0.92rem] text-[#b9bcc8]">Average Time per Question: 0 sec</p>
+                    </div>
+                </section>
+            </aside>
+        </main>
+    </div>
 
     <script src="{{ url_for('static', filename='js/sessionManager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>

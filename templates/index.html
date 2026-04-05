@@ -2,18 +2,2084 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
-    <!-- templates/index.html -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuizAI - Quiz Yourself on Anything. Instantly.</title>
+    <meta name="description"
+        content="Pick a topic, set the difficulty, and let AI generate a personalized quiz for you in seconds. QuizAI makes learning smarter and faster." />
 
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Inter:wght@300;400;500;600;700;800;900&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind compiled output -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
+    <style>
+        
+
+        .landing-shell {
+            width: 100%;
+            max-width: 1440px;
+            margin-inline: auto;
+        }
+
+        .brand-logo {
+            display: block;
+            height: 56px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand-mark-icon {
+            display: block;
+            width: 2.5rem;
+            height: 2.5rem;
+            object-fit: contain;
+        }
+
+        #hero {
+            background-color: #1D0A0B;
+        }
+
+        .how-it-works-section {
+            position: relative;
+            margin-top: -3px;
+            padding-top: calc(2rem + 3px);
+            background-color: rgb(44, 18, 27);
+        }
+
+        .how-step-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42), 0 0 24px rgba(212, 175, 55, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+        }
+
+        .how-step-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.1), transparent 42%, rgba(255, 255, 255, 0.02));
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .how-step-card::after {
+            content: "";
+            position: absolute;
+            inset: auto 24px 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.46), transparent);
+            opacity: 0.62;
+            pointer-events: none;
+        }
+
+        .how-step-frame {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .how-step-frame::before,
+        .how-step-frame::after {
+            content: "";
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+            opacity: 0.66;
+        }
+
+        .how-step-frame::before {
+            top: 0;
+        }
+
+        .how-step-frame::after {
+            bottom: 0;
+        }
+
+        .how-metrics-strip {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-metrics-strip-frame {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .how-metrics-strip-frame::before,
+        .how-metrics-strip-frame::after {
+            content: "";
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+            opacity: 0.66;
+        }
+
+        .how-metrics-strip-frame::before {
+            top: 0;
+        }
+
+        .how-metrics-strip-frame::after {
+            bottom: 0;
+        }
+
+        .how-step-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.48), 0 0 30px rgba(212, 175, 55, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .how-step-card-active {
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34), 0 0 18px rgba(212, 175, 55, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .how-step-card-active::before {
+            opacity: 0.62;
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.08), transparent 42%, rgba(255, 255, 255, 0.02));
+        }
+
+        .how-step-card-active::after {
+            height: 1px;
+            opacity: 0.4;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+            animation: none;
+        }
+
+        .how-step-icon {
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 14px 30px rgba(0, 0, 0, 0.28);
+        }
+
+        .how-step-icon svg {
+            transition: color 220ms ease;
+        }
+
+        .how-step-card:hover .how-step-icon svg {
+            color: #ffffff;
+        }
+
+        .how-step-card-active .how-step-icon {
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 14px 30px rgba(0, 0, 0, 0.28);
+        }
+
+        .benefit-section {
+            position: relative;
+            overflow: visible;
+            min-height: 100vh;
+            padding: clamp(4rem, 6vw, 5.5rem) 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .benefit-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+        }
+
+        .benefit-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(150deg, rgba(212, 175, 55, 0.08), transparent 38%, rgba(255, 255, 255, 0.02));
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 30px 72px rgba(0, 0, 0, 0.4), 0 0 24px rgba(212, 175, 55, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .benefit-frame {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .benefit-frame::before,
+        .benefit-frame::after {
+            content: "";
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.46), transparent);
+            opacity: 0.62;
+        }
+
+        .benefit-frame::before {
+            top: 0;
+        }
+
+        .benefit-frame::after {
+            bottom: 0;
+        }
+
+        .benefit-icon {
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 14px 30px rgba(0, 0, 0, 0.24);
+        }
+
+        .benefit-icon svg {
+            transition: color 220ms ease;
+        }
+
+        .benefit-card:hover .benefit-icon svg {
+            color: #ffffff;
+        }
+
+        .benefit-badge {
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            border-radius: 9999px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.45rem 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            color: #d4af37;
+        }
+
+        .benefit-cta-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .testimonial-section {
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 4.5rem 2rem;
+            background: rgb(44, 18, 27);
+        }
+
+        .testimonial-orb {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        .testimonial-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+        }
+
+        .testimonial-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(150deg, rgba(212, 175, 55, 0.08), transparent 38%, rgba(255, 255, 255, 0.02));
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 30px 72px rgba(0, 0, 0, 0.4), 0 0 24px rgba(212, 175, 55, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .testimonial-frame {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .testimonial-frame::before,
+        .testimonial-frame::after {
+            content: "";
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.46), transparent);
+            opacity: 0.62;
+            transition: background 220ms ease, opacity 220ms ease;
+        }
+
+        .testimonial-card:hover .testimonial-frame::before,
+        .testimonial-card:hover .testimonial-frame::after {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+            opacity: 0.78;
+        }
+
+        .testimonial-frame::before {
+            top: 0;
+        }
+
+        .testimonial-frame::after {
+            bottom: 0;
+        }
+
+        .testimonial-avatar {
+            display: inline-flex;
+            height: 3rem;
+            width: 3rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 14px 30px rgba(0, 0, 0, 0.2);
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #d4af37;
+        }
+
+        .testimonial-stars {
+            display: inline-flex;
+            gap: 0.35rem;
+            color: #d4af37;
+        }
+
+        .faq-section {
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 5rem 2rem;
+        }
+
+        .faq-orb {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(42px);
+            pointer-events: none;
+        }
+
+        .faq-card,
+        .faq-accordion-item {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .faq-card::before,
+        .faq-accordion-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(150deg, rgba(212, 175, 55, 0.08), transparent 38%, rgba(255, 255, 255, 0.02));
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .faq-frame {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .faq-frame::before,
+        .faq-frame::after {
+            content: "";
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.46), transparent);
+            opacity: 0.62;
+        }
+
+        .faq-frame::before {
+            top: 0;
+        }
+
+        .faq-frame::after {
+            bottom: 0;
+        }
+
+        .faq-accordion-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .faq-accordion-icon {
+            flex-shrink: 0;
+            display: inline-flex;
+            height: 2.5rem;
+            width: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #d4af37;
+            transition: transform 220ms ease, background 220ms ease, border-color 220ms ease;
+        }
+
+        .faq-accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 220ms ease;
+        }
+
+        .faq-accordion-content-inner {
+            overflow: hidden;
+        }
+
+        .faq-accordion-item[data-open="true"] .faq-accordion-content {
+            grid-template-rows: 1fr;
+        }
+
+        .faq-accordion-item[data-open="true"] .faq-accordion-icon {
+            transform: rotate(45deg);
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.32);
+        }
+
+        .footer-section {
+            position: relative;
+            overflow: hidden;
+            padding: 0 1.5rem 0.5rem;
+            background: linear-gradient(90deg, #0b1a2b 60%, #3a4d7a 200%);
+        }
+
+        .footer-copy {
+            position: relative;
+        }
+
+        /* Wave only — no flat fill here (body uses #1a0a0a + radial gradients; a solid block looked like bands). */
+        .footer-wave-divider {
+            position: relative;
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            line-height: 0;
+            pointer-events: none;
+            background: transparent;
+        }
+
+        .footer-wave-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(72px, 11vw, 112px);
+        }
+
+        .hero-section-divider {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            margin: -4px 0 -3px;
+            padding: 0;
+            line-height: 0;
+            pointer-events: none;
+            background-color: #2C121B;
+        }
+
+        .hero-section-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(72px, 12vw, 120px);
+        }
+
+        .how-it-works-section-divider {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            margin: -4px 0 -3px;
+            padding: 0;
+            line-height: 0;
+            pointer-events: none;
+            background-color: #1A0A0A;
+        }
+
+        .how-it-works-section-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(72px, 12vw, 120px);
+        }
+
+        .who-can-benefit-section-divider {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            margin: -4px 0 -3px;
+            padding: 0;
+            line-height: 0;
+            pointer-events: none;
+            background-color: #2C121B;
+        }
+
+        .who-can-benefit-section-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(72px, 12vw, 120px);
+        }
+
+        .testimonials-section-divider {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            margin: -4px 0 -3px;
+            padding: 0;
+            line-height: 0;
+            pointer-events: none;
+            background-color: #1A0A0A;
+        }
+
+        .testimonials-section-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(72px, 12vw, 120px);
+        }
+
+        .faq-section-divider {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            margin: -4px 0 -3px;
+            padding: 0;
+            line-height: 0;
+            pointer-events: none;
+            background: linear-gradient(90deg, #0b1a2b 60%, #3a4d7a 200%);
+        }
+
+        .faq-section-divider svg {
+            display: block;
+            width: 100%;
+            height: clamp(72px, 12vw, 120px);
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(48px);
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.08) 55%, rgba(212, 175, 55, 0) 90%);
+            z-index: 0;
+            will-change: transform;
+            animation-play-state: running;
+        }
+
+        .hero-blob-top-left {
+            width: 420px;
+            height: 420px;
+            top: 12px;
+            left: 12px;
+            animation: heroBlobMoveTopLeft 8s ease-in-out infinite;
+        }
+
+        .hero-blob-center {
+            width: 520px;
+            height: 520px;
+            top: 46%;
+            left: 52%;
+            transform: translate(-50%, -50%);
+            animation: heroBlobMoveCenter 6s ease-in-out infinite;
+        }
+
+
+        @keyframes heroBlobMoveTopLeft {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(66px, 64px) scale(1.05);
+            }
+
+            50% {
+                transform: translate(76px, 60px) scale(1.04);
+            }
+
+            75% {
+                transform: translate(16px, 14px) scale(1.09);
+            }
+        }
+
+        @keyframes heroBlobMoveCenter {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            25% {
+                transform: translate(-35.2%, -40.8%) scale(1.1);
+            }
+
+            50% {
+                transform: translate(-48.5%, -51%) scale(1.2);
+            }
+
+            75% {
+                transform: translate(-49.2%, -49.8%) scale(1.3);
+            }
+        }
+
+        @media (max-width: 1024px) {
+
+            .hero-blob-top-left,
+            .hero-blob-center {
+                animation: none !important;
+                transform: none !important;
+            }
+        }
+
+        #hero-cta-btn,
+        #nav-start-btn,
+        .primary-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #ffffff;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 1);
+            border-radius: 9999px;
+            backdrop-filter: blur(14px);
+            transition: background 200ms ease-in-out, box-shadow 200ms ease-in-out;
+        }
+
+
+
+        @media (max-width: 540px) {
+            .brand-logo {
+                height: 44px;
+            }
+
+            .brand-mark {
+                gap: 0.65rem;
+            }
+
+            .brand-mark-icon {
+                width: 2.1rem;
+                height: 2.1rem;
+            }
+
+            .benefit-section {
+                padding: 5.5rem 1.25rem;
+            }
+
+            .testimonial-section {
+                min-height: auto;
+                padding: 4rem 1.25rem;
+            }
+
+            .faq-section {
+                min-height: auto;
+                padding: 4rem 1.25rem;
+            }
+
+            .footer-section {
+                padding: 0 1rem 0.35rem;
+            }
+
+            .footer-wave-divider svg {
+                height: clamp(56px, 15vw, 88px);
+            }
+
+            .hero-section-divider svg {
+                height: clamp(56px, 16vw, 96px);
+            }
+        }
+
+        /* ── Perspective Card Tilt ── */
+        .how-step-card-perspective {
+            perspective: 900px;
+            perspective-origin: center center;
+        }
+
+        .how-step-card,
+        .benefit-card {
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 0.08s linear, border-color 220ms ease, box-shadow 220ms ease;
+        }
+
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .how-step-card,
+            .how-step-card:hover,
+            .how-step-card-active,
+            .benefit-card,
+            .benefit-card:hover,
+            .testimonial-card,
+            .testimonial-card:hover {
+                transition: none;
+                transform: none !important;
+            }
+
+            .how-step-card-active::after {
+                animation: none;
+            }
+
+        }
+    </style>
 </head>
 
-<body>
-    <h1 class="text-amber-500">This is Homepage!</h1>
-    <h2>Work in Progress!!!</h2>
-    <h4>Good Things Takes Time, be patient.😁</h4>
+
+<body class="bg-[#1a0a0a] text-[#fdf2f2] min-h-screen overflow-x-hidden antialiased">
+
+
+    <!--? ════════════════════════════════════ HERO SECTION ════════════════════════════════════ -->
+    <main>
+        <!--? Hero Section -->
+        <section id="hero" aria-labelledby="hero-headline" class="relative h-screen min-h-screen flex flex-col overflow-hidden
+            max-[540px]:px-5">
+
+            <!--& ── Navbar ── -->
+            <header>
+                <nav id="navbar" role="navigation" aria-label="Main navigation" class="relative w-screen z-2">
+                    <div class="h-20 flex w-full items-center justify-between px-8 xl:px-10
+                        max-[540px]:px-5">
+
+                        <!-- Logo -->
+                        <a href="/" class="brand-mark cursor-pointer select-none no-underline" aria-label="SpinIQ home">
+                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SpinIQ logo"
+                                class="brand-mark-icon" />
+                            <p class="m-0 text-[1.4rem] font-extrabold tracking-[-0.025em] text-[#C63AC0] brand-wordmark">
+                                Spin<span class="text-[#7444E3]">IQ</span></p>
+                        </a>
+
+                        <!-- Right group -->
+                        <div class="flex items-center gap-8 max-[540px]:gap-3">
+                            <a href="#how-it-works" id="nav-how-link" class="font-medium
+                               text-[rgba(255,255,255,0.70)] no-underline
+                               text-[1rem]">
+                                How it Works
+                            </a>
+                            <a href="/quiz-config" id="nav-start-btn" role="button"
+                                class="font-semibold text-white no-underline cursor-pointer
+                               bg-[rgba(255,255,255,0.08)] backdrop-blur-md border border-[rgba(255,255,255,0.65)] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] rounded-full px-[22px] py-2 text-[1rem]">
+                                Get Started
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+
+            <div class="hero-blob hero-blob-top-left" aria-hidden="true"></div>
+            <div class="hero-blob hero-blob-center" aria-hidden="true"></div>
+
+            <!--& ── Hero content grid (centered, grows to fill remaining space) ── -->
+            <div class="flex-1 flex items-center justify-center px-8 xl:px-10 py-12 max-[540px]:px-5 max-[540px]:py-8">
+                <div class="landing-shell
+                  grid grid-cols-2 items-center gap-10
+                  max-[920px]:grid-cols-1 max-[920px]:gap-8 max-[920px]:text-center
+                  relative z-1">
+
+
+                    <!-- ── LEFT: Text Content ── -->
+                    <div class="flex flex-col gap-5 anim-left">
+
+                        <!-- "Powered by AI" pill badge -->
+                        <span role="note" aria-label="Powered by AI" class="inline-flex items-center gap-[7px] w-fit bg-[rgba(255,255,255,0.04)] backdrop-blur-md border border-[rgba(255,255,255,0.18)] shadow-[inset_0_1px_0_rgba(255,255,255,0.20)] rounded-full px-3 py-[5px] text-[0.92rem] font-semibold text-[#ffffffc4] tracking-[0.01em] max-[920px]:mx-auto">
+                            <span aria-hidden="true">⚡</span>
+                            Powered by AI
+                        </span>
+
+                        <!-- Headline — clamp font-size, black weight, tight leading -->
+                        <h1 id="hero-headline" class="text-[clamp(2.7rem,4.5vw,4.3rem)] font-black
+                   leading-[1.03] tracking-[-0.04em] text-[#fdf2f2] heading-font">
+                            Quiz Yourself on Anything, <br />
+                            <!-- gradient-text class lives in input.css -->
+                            <span class="text-gold-gradient">Instantly.</span>
+                        </h1>
+
+                        <!-- Sub-text -->
+                        <p class="text-[1.06rem] leading-[1.6] font-normal
+                    text-[rgba(253,242,242,0.55)] max-w-[560px]
+                    max-[920px]:mx-auto">
+                            Pick a topic, set the difficulty, and let AI generate a personalized quiz for you in
+                            seconds.
+                        </p>
+
+                        <!-- CTA — simple glass pill -->
+                        <a href="/quiz-config" id="hero-cta-btn" role="button" aria-label="Start the quiz" class="primary-cta inline-flex items-center gap-2 w-fit no-underline
+                              text-md font-semibold text-[#ffffff] cursor-pointer
+                              bg-transparent backdrop-blur-[14px] border border-[rgb(255,255,255)] 
+                              rounded-full px-11 py-[13px] max-[920px]:mx-auto">
+                            Start Quiz
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </a>
+
+                    </div>
+
+
+                    <!-- ── RIGHT: Stacked Liquid Glass Cards ── -->
+                    <div class="flex justify-center items-center anim-right">
+                        <div class="hero-card-stack relative w-full max-w-[408px]">
+                            <article aria-label="AI quiz generation status" class="hero-card-back absolute inset-0 z-0 p-8
+                   rounded-[20px] overflow-hidden
+                   max-[540px]:p-5">
+                                <div class="relative z-1 flex h-full flex-col">
+                                    <div class="mb-4">
+                                        <p class="text-[0.86rem] font-semibold text-[rgba(255,255,255,0.78)]">
+                                            Generating Quiz...
+                                        </p>
+                                        <p class="mt-1 text-[0.74rem] leading-[1.55] text-[rgba(255,255,255,0.42)]">
+                                            AI is preparing your questions
+                                        </p>
+                                    </div>
+
+                                    <div class="mb-6">
+                                        <div aria-hidden="true"
+                                            class="h-[7px] w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.10)]">
+                                            <div class="ai-progress-fill h-full w-[68%] rounded-full"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-6 flex flex-wrap gap-2">
+                                        <span class="ai-process-tag ai-process-tag-active">NLP Processing</span>
+                                        <span class="ai-process-tag">Difficulty Calibration</span>
+                                        <span class="ai-process-tag">Question Generation</span>
+                                    </div>
+
+                                    <p class="mt-auto text-[0.68rem] tracking-[0.02em] text-[rgba(255,255,255,0.30)]">
+                                        Analyzing topic: Machine Learning
+                                    </p>
+                                </div>
+                            </article>
+
+                            <article aria-label="Sample quiz statistics" class="hero-card-front relative z-1 w-full max-w-[408px] min-h-80 p-8
+                   bg-[rgba(182,182,182,0.12)] backdrop-blur-[120px] rounded-[24px] border border-[rgba(255,255,255,0.22)]
+                   shadow-[inset_0_1.5px_0_rgba(255,255,255,0.25),0_8px_40px_rgba(0,0,0,0.25)]
+                   card-float
+                   max-[920px]:max-w-[340px]
+                   max-[540px]:min-h-[320px] max-[540px]:p-6">
+
+                                <!-- Card title — tiny, muted, uppercase, tracked -->
+                                <p class="mb-5 text-[0.66rem] font-semibold uppercase
+                      tracking-[0.15em] text-[rgba(255,255,255,0.7)]">
+                                    Your Quiz Stats
+                                </p>
+
+                                <!-- Score — large gradient text -->
+                                <div aria-label="Score 8 out of 10" class="mb-6 text-[3rem] font-black tracking-[-0.045em]
+                     leading-none">
+                                    <span class="text-[#ffffffe0]">8</span><span class="text-[#ffffffe0]"> /
+                                    </span><span class="text-[#ffffffe0]">10</span>
+                                </div>
+
+                                <!-- Progress bar track + fill -->
+                                <div role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
+                                    aria-label="80% complete"
+                                    class="mb-7 h-[6px] w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.49)]">
+                                    <div class="h-full w-[80%] rounded-full
+                          bg-[linear-gradient(90deg,#d4af37_60%,#d4af37_60%,#f5d27a_100%)]">
+                                    </div>
+                                </div>
+
+                                <!-- Divider -->
+                                <div aria-hidden="true" class="mb-6 h-px bg-[rgba(255,255,255,0.10)]">
+                                </div>
+
+                                <!-- Timer row -->
+                                <div class="mb-6 flex items-center gap-[10px]">
+                                    <!-- Clock SVG icon -->
+                                    <svg aria-hidden="true"
+                                        class="w-[19px] h-[19px] text-[rgba(255,255,255,0.84)] shrink-0"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                    </svg>
+
+                                    <!-- Live countdown — font set via #countdown in input.css -->
+                                    <span id="countdown" aria-live="polite" aria-atomic="true"
+                                        aria-label="Time remaining"
+                                        class="text-[1.25rem] font-bold text-white tracking-[0.05em]">
+                                        01:24
+                                    </span>
+
+                                    <span class="ml-auto text-[0.72rem] font-medium
+                           text-[rgba(253,242,242,0.7)]">
+                                        Time Remaining
+                                    </span>
+                                </div>
+
+                                <!-- Pills row -->
+                                <div class="flex flex-wrap gap-2">
+
+                                    <!-- Accuracy — green tint pill -->
+                                    <span aria-label="80 percent accuracy" class="text-[0.76rem] font-semibold rounded-full px-3 py-1
+                       whitespace-nowrap leading-normal
+                       bg-[rgba(34,197,94,0.15)]
+                       border border-[rgba(34,197,94,0.50)]
+                       text-[#86efac]">
+                                        80% Accuracy
+                                    </span>
+
+                                    <!-- Topic — neutral glass pill -->
+                                    <span aria-label="Topic: Machine Learning" class="text-[0.76rem] font-semibold rounded-full px-3 py-1
+                       whitespace-nowrap leading-normal
+                       bg-[rgba(255,255,255,0.08)]
+                       border border-[rgba(255,255,255,0.25)]
+                       text-[rgba(255,255,255,0.70)]">
+                                        Topic: Machine Learning
+                                    </span>
+
+                                    <!-- Difficulty — red tint pill -->
+                                    <span aria-label="Difficulty: Hard"
+                                        class="text-[0.76rem] font-semibold rounded-full px-3 py-1 whitespace-nowrap leading-normalbg-[rgba(239,68,68,0.15)] border border-[rgba(239,68,68,0.50)] text-[#fca5a5]">
+                                        Hard</span>
+
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!--~ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= HERO SECTION DIVIDER =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+        <div class="hero-section-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <path
+                    d="M0 0v90.2C49.7 99.9 105 82 160 65c75.5-23.3 145.5-22.4 222-3 63 16 119 14 173-8 79.5-32.4 156.2-27.6 240-10 82.6 17.4 143-1 205-31.7V0H0Z"
+                    fill="#1D0A0B"></path>
+            </svg>
+        </div>
+
+        <!--~ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= HERO SECTION DIVIDER =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+        <!--? HOW IT WORKS SECTION -->
+        <section id="how-it-works" aria-labelledby="how-it-works-title"
+            class="how-it-works-section relative flex min-h-screen items-center overflow-hidden px-8 xl:px-10 pb-28 pt-8 max-[540px]:px-5">
+
+            <div class="landing-shell relative z-1 flex flex-col gap-12">
+                <div class="w-full">
+                    <span
+                        class="inline-flex items-center gap-2 rounded-full border border-[rgba(212,175,55,0.5)] bg-[rgba(255,255,255,0.04)] px-4 py-1.5 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#d4af37] backdrop-blur-md">
+                        How It Works
+                    </span>
+                    <h2 id="how-it-works-title"
+                        class="mt-5 text-[2.5rem] font-black leading-[1.08] tracking-[-0.035em] text-[#fdf2f2] heading-font">
+                        Three steps from idea to AI-generated quiz
+                    </h2>
+                    <p class="mt-4 w-full text-[1.05rem] leading-[1.8] text-[rgba(253,242,242,0.58)]">
+                        A refined walkthrough that mirrors the hero experience with dark glass panels, precise
+                        hierarchy, and a clear focus on the current configuration step.
+                    </p>
+                </div>
+
+                <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div class="how-step-card-perspective">
+                        <article class="how-step-card rounded-[20px] p-7 backdrop-blur-[10px]">
+
+                            <div class="how-step-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <span
+                                    class="text-center text-[0.73rem] font-semibold uppercase tracking-[0.28em] text-[#d4af37]">STEP
+                                    01</span>
+                                <div
+                                    class="how-step-icon mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-2xl backdrop-blur-[20px]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path
+                                            d="M4 19.5V6.75A2.75 2.75 0 0 1 6.75 4h10.5A2.75 2.75 0 0 1 20 6.75V19.5" />
+                                        <path d="M8 8h8" />
+                                        <path d="M8 12h5" />
+                                        <path d="M7 19.5h10" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-7 text-[1.3rem] font-bold tracking-[-0.03em] text-white text-center heading-font">
+                                    Choose a Topic</h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                    Enter any subject you want to practice, revise, or explore and let spinIQ build a focused quiz around it.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="how-step-card-perspective">
+                        <article class="how-step-card how-step-card-active rounded-[20px] p-7 backdrop-blur-[10px]">
+
+                            <div class="how-step-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <span
+                                    class="text-center text-[0.73rem] font-semibold uppercase tracking-[0.28em] text-[#d4af37]">STEP
+                                    02</span>
+                                <div
+                                    class="how-step-icon mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-2xl backdrop-blur-[20px]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <line x1="4" y1="21" x2="4" y2="14" />
+                                        <line x1="4" y1="10" x2="4" y2="3" />
+                                        <line x1="12" y1="21" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12" y2="3" />
+                                        <line x1="20" y1="21" x2="20" y2="16" />
+                                        <line x1="20" y1="12" x2="20" y2="3" />
+                                        <line x1="1" y1="14" x2="7" y2="14" />
+                                        <line x1="9" y1="8" x2="15" y2="8" />
+                                        <line x1="17" y1="16" x2="23" y2="16" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-7 text-[1.3rem] text-center font-bold tracking-[-0.03em] text-white heading-font">Set Difficulty &amp; Length</h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.72)]">
+                                    Easy, medium, or hard. 10 to 20 questions. The AI calibrates complexity to match selected level.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="how-step-card-perspective">
+                        <article class="how-step-card rounded-[20px] p-7 backdrop-blur-[10px]">
+                            <div class="how-step-glare" aria-hidden="true"></div>
+                            <div class="how-step-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <span
+                                    class="text-center text-[0.73rem] font-semibold uppercase tracking-[0.28em] text-[#d4af37]">STEP
+                                    03</span>
+                                <div
+                                    class="how-step-icon mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-2xl backdrop-blur-[20px]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M9 11l3 3L22 4" />
+                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-7 text-[1.3rem] font-bold tracking-[-0.03em] text-white text-center heading-font">
+                                    Generate &amp; Start
+                                </h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                    Review your generated quiz instantly, launch your session, attempt the quiz, and start learning with spinIQ.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div
+                    class="how-metrics-strip flex flex-col gap-5 rounded-[24px] border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.05)] px-6 py-5 shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-[10px] md:flex-row md:items-center md:justify-between">
+                    <div class="how-metrics-strip-frame"></div>
+                    <div class="grid flex-1 gap-5 sm:grid-cols-3">
+                        <div>
+                            <p class="text-[2rem] font-black leading-none tracking-[-0.04em] text-white">
+                                15s
+                            </p>
+                            <p class="mt-2 text-sm text-[rgba(255,255,255,0.55)]">Average generation time</p>
+                        </div>
+                        <div>
+                            <p class="text-[2rem] font-black leading-none tracking-[-0.04em] text-white">
+                                30+
+                            </p>
+                            <p class="mt-2 text-sm text-[rgba(255,255,255,0.55)]">Supported topics</p>
+                        </div>
+                        <div>
+                            <p class="text-[2rem] font-black leading-none tracking-[-0.04em] text-white">
+                                3×
+                            </p>
+                            <p class="mt-2 text-sm text-[rgba(255,255,255,0.55)]">Difficulty levels</p>
+                        </div>
+                    </div>
+
+                    <a href="/quiz-config"
+                        class="inline-flex items-center justify-center gap-2 rounded-[14px] border border-[rgba(255,255,255,0.5)] bg-[rgba(255,255,255,0.04)] px-5 py-3 text-sm font-semibold text-white transition-[transform,background,border-color] duration-200 hover:-translate-y-0.5 hover:border-[rgba(212,175,55,0.38)] hover:bg-[rgba(255,255,255,0.08)]">
+                        Try It Now
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            aria-hidden="true">
+                            <path d="M5 12h14" />
+                            <path d="M12 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <div class="how-it-works-section-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <path
+                    d="M0 0v90.2C49.7 99.9 105 82 160 65c75.5-23.3 145.5-22.4 222-3 63 16 119 14 173-8 79.5-32.4 156.2-27.6 240-10 82.6 17.4 143-1 205-31.7V0H0Z"
+                    fill="#2C121B"></path>
+            </svg>
+        </div>
+
+        <!--~ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= FOOTER WAVE DIVIDER =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+        <div class="footer-wave-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 168" preserveAspectRatio="xMidYMid slice"
+                fill="none">
+                <g stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="#800020" stroke-opacity="0.5" stroke-width="2"
+                        d="M0,82 C280,38 500,162 720,78 C940,54 1160,154 1440,108" />
+                    <path stroke="#d4af37" stroke-opacity="0.55" stroke-width="1.5"
+                        d="M0,78 C270,34 495,158 718,74 C938,50 1158,150 1438,104" />
+                </g>
+            </svg>
+        </div>
+
+        <!--~ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= FOOTER WAVE DIVIDER =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+
+        <!--? WHO CAN BENEFIT SECTION -->
+        <section aria-labelledby="who-can-benefit-title" class="benefit-section">
+            <div class="landing-shell relative z-1 flex flex-col gap-12">
+                <div class="w-full">
+                    <span
+                        class="inline-flex items-center gap-2 rounded-full border border-[rgba(212,175,55,0.44)] bg-[rgba(255,255,255,0.04)] px-4 py-1.5 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#d4af37] backdrop-blur-md">
+                        WHO CAN BENEFIT
+                    </span>
+                    <h2 id="who-can-benefit-title"
+                        class="mt-5 w-full text-[clamp(2.2rem,4vw,3.5rem)] font-black leading-[1.08] tracking-[-0.035em] text-[#fdf2f2] heading-font">
+                        Built for every <span class="text-gold-gradient">kind of learner</span>.
+                    </h2>
+                    <p class="mt-4 w-full text-[1.05rem] leading-[1.8] text-[rgba(253,242,242,0.58)]">
+                        Whether you're preparing for exams or sharpening your knowledge, our AI-powered quiz system
+                        adapts to your needs instantly.
+                    </p>
+                </div>
+
+                <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                    <div class="how-step-card-perspective">
+                        <article class="benefit-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                            <div class="benefit-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <div class="benefit-icon flex h-14 w-14 items-center justify-center rounded-2xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M12 3 2 9l10 6 10-6-10-6Z" />
+                                        <path d="M2 9v6l10 6 10-6V9" />
+                                        <path d="M12 15v6" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-6 text-[1.4rem] font-bold tracking-[-0.03em] heading-font text-white">Students</h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.75] text-[rgba(255,255,255,0.66)]">
+                                    Practice topic-wise quizzes for exams and concept mastery with instant results.
+                                </p>
+                                <span class="benefit-badge mt-6">EXAM READY</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="how-step-card-perspective">
+                        <article class="benefit-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                            <div class="benefit-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <div class="benefit-icon flex h-14 w-14 items-center justify-center rounded-2xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path
+                                            d="M4 19.5V6.75A2.75 2.75 0 0 1 6.75 4h10.5A2.75 2.75 0 0 1 20 6.75V19.5" />
+                                        <path d="M8 8h8" />
+                                        <path d="M8 12h8" />
+                                        <path d="M8 16h5" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-6 text-[1.4rem] font-bold tracking-[-0.03em] heading-font text-white">Teachers</h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.75] text-[rgba(255,255,255,0.66)]">
+                                    Generate quizzes instantly for classrooms and assignments without manual effort.
+                                </p>
+                                <span class="benefit-badge mt-6">SAVE TIME</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="how-step-card-perspective">
+                        <article class="benefit-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                            <div class="benefit-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <div class="benefit-icon flex h-14 w-14 items-center justify-center rounded-2xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="9" />
+                                        <path d="M12 8v4l2.5 2.5" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-6 text-[1.4rem] font-bold tracking-[-0.03em] text-white heading-font">Self-Learners
+                                </h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.75] text-[rgba(255,255,255,0.66)]">
+                                    Test your understanding with AI-generated quizzes tailored to your chosen topic and
+                                    difficulty.
+                                </p>
+                                <span class="benefit-badge mt-6">LEARN FASTER</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="how-step-card-perspective">
+                        <article class="benefit-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                            <div class="benefit-frame"></div>
+                            <div class="relative z-1 flex h-full flex-col">
+                                <div class="benefit-icon flex h-14 w-14 items-center justify-center rounded-2xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#d4af37]"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M12 3v18" />
+                                        <path d="M17 8.5a5 5 0 0 0-10 0c0 5 5 5 5 10" />
+                                        <path d="M8.5 18h7" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-6 text-[1.4rem] font-bold tracking-[-0.03em] text-white heading-font">Professionals
+                                </h3>
+                                <p class="mt-4 text-[0.98rem] leading-[1.75] text-[rgba(255,255,255,0.66)]">
+                                    Stay sharp by testing your knowledge across domains with quick, AI-generated
+                                    quizzes.
+                                </p>
+                                <span class="benefit-badge mt-6">STAY UPDATED</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <article class="benefit-cta-card rounded-[28px] p-8 backdrop-blur-[10px]">
+                    <div class="benefit-frame"></div>
+                    <div class="relative z-1 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <h3 class="text-[1.5rem] font-bold tracking-[-0.03em] heading-font text-white">No account needed to start
+                            </h3>
+                            <p class="mt-3 max-w-160 text-[1rem] leading-[1.8] text-[rgba(255,255,255,0.62)]">
+                                Jump straight into generating your first quiz in seconds. No setup required.
+                            </p>
+                        </div>
+                        <a href="/quiz-config"
+                            class="inline-flex items-center justify-center gap-2 rounded-[16px] border border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.05)] px-6 py-3.5 text-sm font-semibold text-white transition-[transform,background,border-color] duration-200 hover:-translate-y-0.5 hover:border-[rgba(212,175,55,0.38)] hover:bg-[rgba(255,255,255,0.08)]">
+                            Start for free
+                            <span aria-hidden="true">-&gt;</span>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <div class="who-can-benefit-section-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <path
+                    d="M0 0v90.2C49.7 99.9 105 82 160 65c75.5-23.3 145.5-22.4 222-3 63 16 119 14 173-8 79.5-32.4 156.2-27.6 240-10 82.6 17.4 143-1 205-31.7V0H0Z"
+                    fill="#1D0A0B"></path>
+            </svg>
+        </div>
+
+
+        <!--? TESTIMONIALS SECTION -->
+        <section aria-labelledby="testimonials-title" class="testimonial-section">
+            <div class="landing-shell relative z-1 flex flex-col gap-8">
+                <div class="w-full">
+                    <span
+                        class="inline-flex items-center gap-2 rounded-full border border-[rgba(212,175,55,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-1.5 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#d4af37] backdrop-blur-md">
+                        TESTIMONIALS
+                    </span>
+                    <h2 id="testimonials-title"
+                        class="mt-5 w-full text-[2.7rem] font-black leading-[1.08] tracking-[-0.035em] text-[#fdf2f2] heading-font">
+                        Loved by learners <span class="text-gold-gradient">everywhere</span>.
+                    </h2>
+                    <p class="mt-4 w-full text-[1.05rem] leading-[1.8] text-[rgba(253,242,242,0.58)]">
+                        From students to professionals - here's how people are using AI-generated quizzes to learn
+                        faster and smarter.
+                    </p>
+                </div>
+
+                <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    <article class="testimonial-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                        <div class="testimonial-frame"></div>
+                        <div class="relative z-1 flex h-full flex-col">
+                            <div class="testimonial-stars" aria-label="5 star rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </div>
+                            <p class="mt-5 text-[0.95rem] leading-[1.72] text-[rgba(255,255,255,0.68)]">
+                                "I used this for exam revision. It genuinely helped. The AI creates focused questions
+                                from any topic with instant feedback, speeding up my prep."
+                            </p>
+                            <div class="mt-6 flex items-center gap-4">
+                                <span class="testimonial-avatar">RK</span>
+                                <div>
+                                    <p class="text-[1rem] font-semibold text-white">Rohan Kapoor</p>
+                                    <p class="text-sm text-[rgba(255,255,255,0.52)]">B.Tech Student</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="testimonial-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                        <div class="testimonial-frame"></div>
+                        <div class="relative z-1 flex h-full flex-col">
+                            <div class="testimonial-stars" aria-label="5 star rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </div>
+                            <p class="mt-5 text-[1rem] leading-[1.8] text-[rgba(255,255,255,0.68)]">
+                                "I create quick quizzes for my students in seconds. What used to take me an hour now
+                                takes minutes. The quality of questions is surprisingly accurate."
+                            </p>
+                            <div class="mt-6 flex items-center gap-4">
+                                <span class="testimonial-avatar">PS</span>
+                                <div>
+                                    <p class="text-[1rem] font-semibold text-white">Priya Sharma</p>
+                                    <p class="text-sm text-[rgba(255,255,255,0.52)]">Teacher</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="testimonial-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                        <div class="testimonial-frame"></div>
+                        <div class="relative z-1 flex h-full flex-col">
+                            <div class="testimonial-stars" aria-label="5 star rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </div>
+                            <p class="mt-5 text-[1rem] leading-[1.8] text-[rgba(255,255,255,0.68)]">
+                                "Been learning Machine Learning on my own. This tool lets me test my understanding after
+                                every topic. The explanations really help reinforce concepts."
+                            </p>
+                            <div class="mt-6 flex items-center gap-4">
+                                <span class="testimonial-avatar">AM</span>
+                                <div>
+                                    <p class="text-[1rem] font-semibold text-white">Arjun Mehta</p>
+                                    <p class="text-sm text-[rgba(255,255,255,0.52)]">Self-Learner</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="testimonial-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                        <div class="testimonial-frame"></div>
+                        <div class="relative z-1 flex h-full flex-col">
+                            <div class="testimonial-stars" aria-label="5 star rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </div>
+                            <p class="mt-5 text-[1rem] leading-[1.8] text-[rgba(255,255,255,0.68)]">
+                                "I prepare for certifications using topic-based quizzes. It saves a lot of time and
+                                helps identify weak areas quickly. Very efficient tool."
+                            </p>
+                            <div class="mt-6 flex items-center gap-4">
+                                <span class="testimonial-avatar">NK</span>
+                                <div>
+                                    <p class="text-[1rem] font-semibold text-white">Neha Kulkarni</p>
+                                    <p class="text-sm text-[rgba(255,255,255,0.52)]">Engineering Student</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="testimonial-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                        <div class="testimonial-frame"></div>
+                        <div class="relative z-1 flex h-full flex-col">
+                            <div class="testimonial-stars" aria-label="5 star rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </div>
+                            <p class="mt-5 text-[1rem] leading-[1.8] text-[rgba(255,255,255,0.68)]">
+                                "My study group uses this to generate quizzes and compete. It actually makes revision
+                                more engaging instead of just reading notes."
+                            </p>
+                            <div class="mt-6 flex items-center gap-4">
+                                <span class="testimonial-avatar">BD</span>
+                                <div>
+                                    <p class="text-[1rem] font-semibold text-white">Banshi Das</p>
+                                    <p class="text-sm text-[rgba(255,255,255,0.52)]">MBA Student</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="testimonial-card rounded-[24px] p-7 backdrop-blur-[10px]">
+                        <div class="testimonial-frame"></div>
+                        <div class="relative z-1 flex h-full flex-col">
+                            <div class="testimonial-stars" aria-label="5 star rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-current" viewBox="0 0 24 24"
+                                    aria-hidden="true">
+                                    <path
+                                        d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                </svg>
+                            </div>
+                            <p class="mt-5 text-[1rem] leading-[1.8] text-[rgba(255,255,255,0.68)]">
+                                "Simple, fast, and effective. I use it to stay sharp in my field. No setup needed - just
+                                pick a topic and start testing instantly."
+                            </p>
+                            <div class="mt-6 flex items-center gap-4">
+                                <span class="testimonial-avatar">VR</span>
+                                <div>
+                                    <p class="text-[1rem] font-semibold text-white">Vikram Rao</p>
+                                    <p class="text-sm text-[rgba(255,255,255,0.52)]">Software Engineer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <div class="testimonials-section-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <path
+                    d="M0 0v90.2C49.7 99.9 105 82 160 65c75.5-23.3 145.5-22.4 222-3 63 16 119 14 173-8 79.5-32.4 156.2-27.6 240-10 82.6 17.4 143-1 205-31.7V0H0Z"
+                    fill="#2C121B"></path>
+            </svg>
+        </div>
+
+        <!--~ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= FOOTER WAVE DIVIDER =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+        <div class="footer-wave-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 168" preserveAspectRatio="xMidYMid slice"
+                fill="none">
+                <g stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="#800020" stroke-opacity="0.5" stroke-width="2"
+                        d="M0,82 C280,38 500,162 720,78 C940,54 1160,154 1440,108" />
+                    <path stroke="#d4af37" stroke-opacity="0.55" stroke-width="1.5"
+                        d="M0,78 C270,34 495,158 718,74 C938,50 1158,150 1438,104" />
+                </g>
+            </svg>
+        </div>
+
+        <!--~ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= FOOTER WAVE DIVIDER =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+        <!--? FAQs SECTION -->
+        <section aria-labelledby="faq-title" class="faq-section">
+            <div class="faq-orb left-[10%] top-24 h-56 w-56 bg-[rgba(212,175,55,0.08)]"></div>
+            <div class="faq-orb right-[8%] bottom-20 h-72 w-72 bg-[rgba(128,0,32,0.12)]"></div>
+
+            <div
+                class="landing-shell relative z-1 grid gap-8 xl:grid-cols-[minmax(300px,0.92fr)_minmax(0,1.08fr)] xl:items-start">
+                <div class="flex flex-col">
+                    <span
+                        class="inline-flex w-fit items-center gap-2 rounded-full border border-[rgba(212,175,55,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-1.5 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#d4af37] backdrop-blur-md">
+                        FAQS
+                    </span>
+                    <h2 id="faq-title"
+                        class="mt-5 text-[2.6rem] font-black leading-[1.08] tracking-[-0.035em] text-[#fdf2f2] heading-font">
+                        Got <span class="text-gold-gradient">questions?</span>
+                    </h2>
+                    <p class="mt-4 max-w-lg text-[1.05rem] leading-[1.8] text-[rgba(253,242,242,0.58)]">
+                        Everything you need to know about the platform. Can't find your answer? Reach out to us.
+                    </p>
+
+                    <article class="faq-card mt-8 rounded-[28px] p-8 backdrop-blur-[10px]">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <p class="max-w-[20rem] text-[1.08rem] leading-[1.85] text-[rgba(255,255,255,0.7)]">
+                                Still have questions? We're happy to help you out directly.
+                            </p>
+                            <a href="#"
+                                class="mt-8 inline-flex items-center justify-center gap-2 rounded-[16px] border border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.05)] px-6 py-3.5 text-sm font-semibold text-white transition-[transform,background,border-color] duration-200 hover:-translate-y-0.5 hover:border-[rgba(212,175,55,0.38)] hover:bg-[rgba(255,255,255,0.08)]">
+                                Contact us <span aria-hidden="true">-&gt;</span>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="grid gap-4">
+                    <article class="faq-accordion-item rounded-[24px] p-6 backdrop-blur-[10px]" data-open="true">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <button type="button" class="faq-accordion-trigger" aria-expanded="true">
+                                <span class="text-[1.08rem] font-semibold leading-normal text-white">Is this platform
+                                    completely free to use?</span>
+                                <span class="faq-accordion-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-content">
+                                <div class="faq-accordion-content-inner">
+                                    <p class="pt-4 pr-14 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                        Yes - generating quizzes is free with no account required. Just enter a topic,
+                                        choose difficulty, and your quiz is ready instantly.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="faq-accordion-item rounded-[24px] p-6 backdrop-blur-[10px]" data-open="false">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <button type="button" class="faq-accordion-trigger" aria-expanded="false">
+                                <span class="text-[1.08rem] font-semibold leading-normal text-white">How does the AI
+                                    generate questions?</span>
+                                <span class="faq-accordion-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-content">
+                                <div class="faq-accordion-content-inner">
+                                    <p class="pt-4 pr-14 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                        Our system uses advanced language models to generate topic-specific questions
+                                        based on your input. It adjusts difficulty and keeps each quiz relevant and
+                                        useful.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="faq-accordion-item rounded-[24px] p-6 backdrop-blur-[10px]" data-open="false">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <button type="button" class="faq-accordion-trigger" aria-expanded="false">
+                                <span class="text-[1.08rem] font-semibold leading-normal text-white">Can I create
+                                    quizzes for any subject?</span>
+                                <span class="faq-accordion-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-content">
+                                <div class="faq-accordion-content-inner">
+                                    <p class="pt-4 pr-14 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                        Yes, you can generate quizzes for almost any topic - from academic subjects to
+                                        technical skills and general knowledge.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="faq-accordion-item rounded-[24px] p-6 backdrop-blur-[10px]" data-open="false">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <button type="button" class="faq-accordion-trigger" aria-expanded="false">
+                                <span class="text-[1.08rem] font-semibold leading-normal text-white">Are the answers and
+                                    explanations accurate?</span>
+                                <span class="faq-accordion-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-content">
+                                <div class="faq-accordion-content-inner">
+                                    <p class="pt-4 pr-14 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                        The AI is designed to provide accurate answers with clear explanations. For
+                                        critical use cases, we still recommend reviewing important content.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="faq-accordion-item rounded-[24px] p-6 backdrop-blur-[10px]" data-open="false">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <button type="button" class="faq-accordion-trigger" aria-expanded="false">
+                                <span class="text-[1.08rem] font-semibold leading-normal text-white">How many questions
+                                    can I generate at once?</span>
+                                <span class="faq-accordion-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-content">
+                                <div class="faq-accordion-content-inner">
+                                    <p class="pt-4 pr-14 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                        You can choose the number of questions, typically from 10 to 20. The system
+                                        generates them instantly based on your selection.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="faq-accordion-item rounded-[24px] p-6 backdrop-blur-[10px]" data-open="false">
+                        <div class="faq-frame"></div>
+                        <div class="relative z-1">
+                            <button type="button" class="faq-accordion-trigger" aria-expanded="false">
+                                <span class="text-[1.08rem] font-semibold leading-normal text-white">Will I get the same
+                                    questions every time?</span>
+                                <span class="faq-accordion-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-content">
+                                <div class="faq-accordion-content-inner">
+                                    <p class="pt-4 pr-14 text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.66)]">
+                                        No - each quiz is dynamically generated, so you can get mostly different
+                                        questions even when you use the same topic more than once.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <div class="faq-section-divider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <defs>
+                    <filter id="faq-wave-line-shadow" x="-5%" y="-20%" width="110%" height="150%">
+                        <feDropShadow dx="0" dy="3.8" stdDeviation="2.6" flood-color="#ffffff" flood-opacity="0.5" />
+                    </filter>
+                </defs>
+                <path
+                    d="M0 0v90.2C49.7 99.9 105 82 160 65c75.5-23.3 145.5-22.4 222-3 63 16 119 14 173-8 79.5-32.4 156.2-27.6 240-10 82.6 17.4 143-1 205-31.7V0H0Z"
+                    fill="#1A0A0A"></path>
+                <path
+                    d="M0 90.2C49.7 99.9 105 82 160 65c75.5-23.3 145.5-22.4 222-3 63 16 119 14 173-8 79.5-32.4 156.2-27.6 240-10 82.6 17.4 143-1 205-31.7"
+                    fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.6" vector-effect="non-scaling-stroke"
+                    filter="url(#faq-wave-line-shadow)">
+                </path>
+            </svg>
+        </div>
+
+        <!--? FOOTER SECTION -->
+        <footer class="footer-section">
+            <div class="relative z-1 w-full px-4 py-10 max-[540px]:px-3 max-[540px]:py-8">
+                <div class="footer-copy">
+                    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                        <div class="flex flex-col items-start text-left">
+                            <span
+                                class="inline-flex items-center gap-2 rounded-full border border-[rgba(212,175,55,0.18)] bg-[rgba(255,255,255,0.04)] px-4 py-1.5 text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#d4af37] backdrop-blur-md">
+                                GET STARTED TODAY
+                            </span>
+                            <h2
+                                class="mt-5 text-[2.4rem] font-black leading-[1.08] tracking-[-0.035em] text-[#fdf2f2] heading-font">
+                                Your next quiz is <span class="text-[#d4af37]">30 seconds</span> away.
+                            </h2>
+                            <p class="mt-4 max-w-[full/2] text-[1.2rem] leading-[1.8] text-[rgba(253,242,242,0.58)]">
+                                No signup. No credit card. Just enter a topic and let AI generate your quiz instantly.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col items-start lg:items-end">
+                            <a href="quiz-config"
+                                class="inline-flex items-center justify-center gap-2 rounded-[16px] border border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.05)] px-6 py-3.5 text-sm font-semibold text-white transition-[transform,background,border-color] duration-200 hover:-translate-y-0.5 hover:border-[rgba(212,175,55,0.38)] hover:bg-[rgba(255,255,255,0.08)]">
+                                Generate your first quiz <span aria-hidden="true">-&gt;</span>
+                            </a>
+                            <p class="mt-4 text-sm leading-[1.7] text-[rgba(255,255,255,0.5)] lg:text-right">
+                                Free forever • No account needed
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="mt-10 h-px w-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent)]">
+                    </div>
+
+                    <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                        <div>
+                            <a href="/" class="brand-mark" aria-label="SpinIQ home">
+                                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SpinIQ logo"
+                                    class="brand-mark-icon" />
+                                <p class="text-[1.4rem] font-extrabold brand-wordmark tracking-[-0.025em] text-[#C63AC0]">Spin<span class="text-[#7444E3]">IQ</span></p>
+                            </a>
+                            <p class="mt-3 max-w-[24rem] text-[0.98rem] leading-[1.8] text-[rgba(255,255,255,0.58)]">
+                                AI-powered quiz generation for faster learning.
+                            </p>
+                        </div>
+
+                        <nav aria-label="Footer navigation"
+                            class="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium text-[rgba(255,255,255,0.62)]">
+                            <a href="#how-it-works" class="transition-colors duration-200 hover:text-white">How it
+                                Works</a>
+                            <a href="#faq-title" class="transition-colors duration-200 hover:text-white">FAQs</a>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+
+    <!--! ===== JAVASCRIPT — Live Countdown Timer ===== -->
+    <script>
+        "use strict";
+
+        (function initCountdown() {
+            const el = document.getElementById('countdown');
+            const INITIAL = 84; // 01:24 in seconds
+            let remaining = INITIAL;
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+
+            function render() {
+                const m = Math.floor(remaining / 60);
+                const s = remaining % 60;
+                el.textContent = pad(m) + ':' + pad(s);
+            }
+
+            function tick() {
+                if (remaining === 0) { remaining = INITIAL; } else { remaining--; }
+                render();
+            }
+
+            render();                 // immediate first render
+            setInterval(tick, 1000);  // count down every second
+        })();
+
+        (function cycleProcessTags() {
+            const tags = Array.from(document.querySelectorAll('.ai-process-tag'));
+            if (tags.length < 2) return;
+
+            let activeIndex = tags.findIndex((tag) => tag.classList.contains('ai-process-tag-active'));
+            if (activeIndex < 0) activeIndex = 0;
+
+            function setActive(index) {
+                tags.forEach((tag, currentIndex) => {
+                    tag.classList.toggle('ai-process-tag-active', currentIndex === index);
+                });
+            }
+
+            setActive(activeIndex);
+
+            setInterval(() => {
+                activeIndex = (activeIndex + 1) % tags.length;
+                setActive(activeIndex);
+            }, 3200);
+        })();
+
+        (function initFaqAccordion() {
+            const items = Array.from(document.querySelectorAll('.faq-accordion-item'));
+            if (!items.length) return;
+
+            function setOpenItem(targetItem) {
+                items.forEach((item) => {
+                    const isOpen = item === targetItem;
+                    item.setAttribute('data-open', isOpen ? 'true' : 'false');
+
+                    const trigger = item.querySelector('.faq-accordion-trigger');
+                    if (trigger) {
+                        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    }
+                });
+            }
+
+            items.forEach((item, index) => {
+                const trigger = item.querySelector('.faq-accordion-trigger');
+                if (!trigger) return;
+
+                trigger.addEventListener('click', () => {
+                    setOpenItem(item);
+                });
+
+                if (index === 0) {
+                    setOpenItem(item);
+                }
+            });
+        })();
+
+        (function smoothScrollToHowItWorks() {
+            const trigger = document.getElementById('nav-how-link');
+            const target = document.getElementById('how-it-works');
+            if (!trigger || !target) return;
+
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+            function easeOutCubic(t) {
+                return t < 0.5
+                    ? 4 * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            }
+
+            trigger.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                if (prefersReducedMotion.matches) {
+                    target.scrollIntoView();
+                    return;
+                }
+
+                const startY = window.scrollY;
+                const targetY = target.getBoundingClientRect().top + window.scrollY;
+                const distance = targetY - startY;
+                const duration = 800;
+                let startTime = null;
+
+                function step(timestamp) {
+                    if (startTime === null) startTime = timestamp;
+                    const elapsed = timestamp - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = easeOutCubic(progress);
+
+                    window.scrollTo(0, startY + distance * eased);
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                }
+
+                window.requestAnimationFrame(step);
+            });
+        })();
+
+        /* ── Perspective Card Tilt ── */
+        (function initPerspectiveTilt() {
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReduced) return;
+
+            const MAX_TILT = 14;   // degrees
+            const SPRING = 0.12; // lerp factor for smooth return
+
+            document.querySelectorAll('.how-step-card, .benefit-card').forEach(function (card) {
+                let targetX = 0, targetY = 0;
+                let currentX = 0, currentY = 0;
+                let rafId = null;
+                let isHovered = false;
+
+                /* inject glare vars on move */
+                card.addEventListener('mousemove', function (e) {
+                    const rect = card.getBoundingClientRect();
+                    const relX = e.clientX - rect.left;   // px from left
+                    const relY = e.clientY - rect.top;    // px from top
+                    const normX = (relX / rect.width) - 0.5; // -0.5 … +0.5
+                    const normY = (relY / rect.height) - 0.5;
+
+                    targetY = normX * MAX_TILT;  // tilt left-right  → rotateY
+                    targetX = -normY * MAX_TILT;  // tilt up-down     → rotateX
+
+                });
+
+                card.addEventListener('mouseenter', function () {
+                    isHovered = true;
+                    if (!rafId) animate();
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    isHovered = false;
+                    targetX = 0;
+                    targetY = 0;
+                });
+
+                function animate() {
+                    currentX += (targetX - currentX) * (isHovered ? 0.18 : SPRING);
+                    currentY += (targetY - currentY) * (isHovered ? 0.18 : SPRING);
+
+                    card.style.transform =
+                        'rotateX(' + currentX.toFixed(3) + 'deg) rotateY(' + currentY.toFixed(3) + 'deg)';
+
+                    /* stop animating when nearly flat and mouse has left */
+                    if (!isHovered && Math.abs(currentX) < 0.05 && Math.abs(currentY) < 0.05) {
+                        card.style.transform = '';
+                        rafId = null;
+                        return;
+                    }
+
+                    rafId = window.requestAnimationFrame(animate);
+                }
+            });
+        })();
+    </script>
 
 </body>
 

@@ -12,6 +12,11 @@ app.logger.setLevel(logging.INFO)
 ALLOWED_TOPICS = {"html", "css", "javascript"}
 ALLOWED_DIFFICULTIES = {"beginner", "intermediate", "advance"}
 ALLOWED_QUESTION_COUNTS = {10, 15, 20}
+DIFFICULTY_TIME_LIMITS_MINUTES = {
+    "beginner": 10,
+    "intermediate": 15,
+    "advance": 20,
+}
 
 
 def _validate_generate_payload(data):
@@ -73,6 +78,11 @@ def generate_quiz_route():
             payload["difficulty"],
             payload["questions"]
         )
+        difficulty_key = payload["difficulty"].strip().lower()
+        time_limit_minutes = DIFFICULTY_TIME_LIMITS_MINUTES[difficulty_key]
+        quiz_data["difficulty"] = difficulty_key
+        quiz_data["time_limit_minutes"] = time_limit_minutes
+        quiz_data["time_limit_seconds"] = time_limit_minutes * 60
         return jsonify(quiz_data)
     except ValueError as exc:
         app.logger.exception("Quiz generation value error")
