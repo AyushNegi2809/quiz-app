@@ -161,7 +161,7 @@ Rules:
 
 def _call_model(prompt: str) -> Dict[str, Any]:
     if not API_KEY:
-        raise ValueError("Missing API key. Set OPENROUTER_API_KEY (or OPENAI_API_KEY) in your .env file.")
+        raise ValueError("Missing API key. Set OPENROUTER_API_KEY in your .env file.")
 
     response = client.chat.completions.create(
         model="openai/gpt-4o-mini",
