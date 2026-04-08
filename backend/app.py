@@ -1,12 +1,11 @@
+import os
 import logging
 from pathlib import Path
-
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
-
 from ai_generator import generate_quiz
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 app = Flask(
     __name__,
@@ -138,4 +137,5 @@ def submit_quiz():
 # ------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
