@@ -1,15 +1,25 @@
 import logging
+from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 
 from ai_generator import generate_quiz
 
-app = Flask(__name__)
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+app = Flask(
+    __name__,
+    template_folder=str(BASE_DIR / "templates"),
+    static_folder=str(BASE_DIR / "static"),
+)
 CORS(app)
 app.logger.setLevel(logging.INFO)
 
-ALLOWED_TOPICS = {"html", "css", "javascript"}
+ALLOWED_TOPICS = {
+    "html", "css", "javascript", "springboot", "mysql", "postgresql", 
+    "mongodb", "c", "c++", "java", "python", "ml", "ai", "reactjs"
+}
 ALLOWED_DIFFICULTIES = {"beginner", "intermediate", "advance"}
 ALLOWED_QUESTION_COUNTS = {10, 15, 20}
 DIFFICULTY_TIME_LIMITS_MINUTES = {

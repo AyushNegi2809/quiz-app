@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizAI Configurator</title>
+    <title>SpinIQ Configurator</title>
     <meta name="description"
         content="Configure your topic, difficulty, and quiz length before generating an AI-powered quiz.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -377,11 +377,13 @@
         </div>
 
         <div class="relative z-1 mx-auto flex w-full max-w-[1240px] flex-1 flex-col">
-            <header class="mb-5 flex items-center justify-between gap-4 pt-2 max-[640px]:mb-6 max-[640px]:flex-col max-[640px]:items-stretch">
+            <header
+                class="mb-5 flex items-center justify-between gap-4 pt-2 max-[640px]:mb-6 max-[640px]:flex-col max-[640px]:items-stretch">
                 <a href="/" aria-label="Back to QuizAI home" class="brand-mark no-underline">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SpinIQ logo"
                         class="brand-mark-icon" />
-                    <p class="brand-wordmark m-0 text-[1.4rem] text-[#C63AC0]">Spin<span class="text-[#7444E3]">IQ</span></p>
+                    <p class="brand-wordmark m-0 text-[1.4rem] text-[#C63AC0]">Spin<span
+                            class="text-[#7444E3]">IQ</span></p>
                 </a>
             </header>
 
@@ -400,7 +402,8 @@
                             Set up your <span class="text-[#f0ca5c]">perfect quiz.</span>
                         </h1>
                         <p class="mb-4 max-w-2xl text-[0.86rem] leading-[1.42] text-[rgba(253,244,241,0.7)]">
-                            Pick your topic, set the challenge level, choose how long you want to practice, and let SpinIQ generate a focused quiz in seconds.
+                            Pick your topic, set the challenge level, choose how long you want to practice, and let
+                            SpinIQ generate a focused quiz in seconds.
                         </p>
 
                         <div class="mt-[0.45rem] grid gap-4">
@@ -411,7 +414,8 @@
                                 <div>
                                     <strong class="mb-[0.06rem] block text-[0.82rem]">Targeted practice</strong>
                                     <p class="m-0 text-[0.76rem] leading-[1.3] text-[rgba(253,244,241,0.52)]">Choose a
-                                        specific topic so the quiz stays relevant to what you want to improve right now.</p>
+                                        specific topic so the quiz stays relevant to what you want to improve right now.
+                                    </p>
                                 </div>
                             </div>
 
@@ -422,7 +426,8 @@
                                 <div>
                                     <strong class="mb-[0.06rem] block text-[0.82rem]">Right-sized difficulty</strong>
                                     <p class="m-0 text-[0.76rem] leading-[1.3] text-[rgba(253,244,241,0.52)]">Start
-                                        with beginner fundamentals or push deeper with more advanced question sets when you're ready.</p>
+                                        with beginner fundamentals or push deeper with more advanced question sets when
+                                        you're ready.</p>
                                 </div>
                             </div>
 
@@ -433,7 +438,8 @@
                                 <div>
                                     <strong class="mb-[0.06rem] block text-[0.82rem]">Fast feedback loop</strong>
                                     <p class="m-0 text-[0.76rem] leading-[1.3] text-[rgba(253,244,241,0.52)]">Generate,
-                                        answer, review, and repeat without leaving the flow. The whole setup takes less than a minute.</p>
+                                        answer, review, and repeat without leaving the flow. The whole setup takes less
+                                        than a minute.</p>
                                 </div>
                             </div>
                         </div>
@@ -442,64 +448,176 @@
 
                 <aside class="flex flex-[0.95] min-w-[390px] max-[980px]:block max-[980px]:min-w-0">
                     <div id="quizContainer"
-                        class="relative flex h-[clamp(450px,62vh,440px)] w-full flex-col overflow-hidden rounded-[32px] border border-[#d4af37b3] bg-[rgba(33,12,10,0.72)] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-[18px] max-[980px]:h-auto max-[640px]:rounded-[26px] max-[640px]:p-[1.3rem]">
+                        class="relative flex h-[clamp(450px,62vh,440px)] w-full flex-col rounded-[32px] border border-[#d4af37b3] bg-[rgba(33,12,10,0.72)] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-[18px] max-[980px]:h-auto max-[640px]:rounded-[26px] max-[640px]:p-[1.3rem]">
                         <div
-                            class="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(212,175,55,0.08),transparent_42%,rgba(255,255,255,0.02))]">
+                            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(145deg,rgba(212,175,55,0.08),transparent_42%,rgba(255,255,255,0.02))]">
                         </div>
                         <div class="relative z-10">
                             <div class="mb-[0.45rem]">
-                                <h2
-                                    class="heading-font my-2 text-[1.45rem] leading-[1.05] tracking-[-0.04em]">
+                                <h2 class="heading-font my-2 text-[1.45rem] leading-[1.05] tracking-[-0.04em]">
                                     Configure your next session</h2>
                                 <p class="mt-[0.2rem] mb-2 text-[0.82rem] leading-[1.35] text-[rgba(253,244,241,0.7)]">
-                                    Every choice updates the session plan below so you know exactly what kind of quiz you're about to generate.
+                                    Every choice updates the session plan below so you know exactly what kind of quiz
+                                    you're about to generate.
                                 </p>
                             </div>
 
                             <form id="quizForm" novalidate class="block">
                                 <div class="grid gap-[0.42rem]">
                                     <div
-                                        class="rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2">
-                                        <label for="topic" class="mb-[0.2rem] block text-[0.82rem] font-bold">Select
+                                        class="relative z-30 rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2 transition-all duration-300 hover:border-[#d4af37] hover:bg-[rgba(255,255,255,0.06)] hover:shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+                                        <label for="topic"
+                                            class="mb-[0.35rem] block text-[0.82rem] font-bold text-[#f0ca5c] tracking-wide">Select
                                             Topic</label>
-                                        <select id="topic" name="topic"
-                                            class="w-full rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.9)] px-3 py-[0.45rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition duration-200 ease-in-out focus:-translate-y-px">
-                                            <option value="HTML">HTML</option>
-                                            <option value="CSS">CSS</option>
-                                            <option value="Javascript">Javascript</option>
-                                        </select>
+                                        <div class="relative custom-select-wrapper" data-target="topic">
+                                            <select id="topic" name="topic" class="hidden">
+                                                <option value="HTML" selected>HTML</option>
+                                                <option value="CSS">CSS</option>
+                                                <option value="Javascript">Javascript</option>
+                                                <option value="Springboot">Springboot</option>
+                                                <option value="MySQL">MySQL</option>
+                                                <option value="PostgreSQL">PostgreSQL</option>
+                                                <option value="MongoDB">MongoDB</option>
+                                                <option value="C">C</option>
+                                                <option value="C++">C++</option>
+                                                <option value="Java">Java</option>
+                                                <option value="Python">Python</option>
+                                                <option value="ML">ML</option>
+                                                <option value="AI">AI</option>
+                                                <option value="ReactJS">ReactJS</option>
+                                            </select>
+                                            <button type="button"
+                                                class="custom-select-button flex w-full items-center justify-between rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.95)] px-4 py-[0.6rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition-all duration-300 ease-in-out focus:border-[#d4af37] focus:shadow-[0_0_10px_rgba(212,175,55,0.2)]">
+                                                <span class="custom-select-value">HTML</span>
+                                                <svg class="h-4 w-4 text-[#d4af37] transition-transform duration-300"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <ul
+                                                class="custom-select-dropdown absolute left-0 right-0 top-[calc(100%+0.5rem)] hidden max-h-[220px] overflow-y-auto overflow-x-hidden rounded-xl border border-[#d4af374d] bg-[rgba(26,11,13,0.98)] p-1.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-200">
+                                                <li data-value="HTML"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[#fdf4f1] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    HTML</li>
+                                                <li data-value="CSS"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    CSS</li>
+                                                <li data-value="Javascript"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Javascript</li>
+                                                <li data-value="Springboot"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Springboot</li>
+                                                <li data-value="MySQL"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    MySQL</li>
+                                                <li data-value="PostgreSQL"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    PostgreSQL</li>
+                                                <li data-value="MongoDB"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    MongoDB</li>
+                                                <li data-value="C"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    C</li>
+                                                <li data-value="C++"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    C++</li>
+                                                <li data-value="Java"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Java</li>
+                                                <li data-value="Python"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Python</li>
+                                                <li data-value="ML"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    ML</li>
+                                                <li data-value="AI"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    AI</li>
+                                                <li data-value="ReactJS"
+                                                    class="cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    ReactJS</li>
+                                            </ul>
+                                        </div>
                                     </div>
 
                                     <div
-                                        class="rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2">
+                                        class="relative z-20 rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2 transition-all duration-300 hover:border-[#d4af37] hover:bg-[rgba(255,255,255,0.06)] hover:shadow-[0_0_15px_rgba(212,175,55,0.15)]">
                                         <label for="difficulty"
-                                            class="mb-[0.2rem] block text-[0.82rem] font-bold">Select
+                                            class="mb-[0.35rem] block text-[0.82rem] font-bold text-[#f0ca5c] tracking-wide">Select
                                             Difficulty</label>
-                                        <select id="difficulty" name="difficulty"
-                                            class="w-full rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.9)] px-3 py-[0.45rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition duration-200 ease-in-out focus:-translate-y-px">
-                                            <option value="beginner">Beginner</option>
-                                            <option value="intermediate">Intermediate</option>
-                                            <option value="advance">Advance</option>
-                                        </select>
+                                        <div class="relative custom-select-wrapper" data-target="difficulty">
+                                            <select id="difficulty" name="difficulty" class="hidden">
+                                                <option value="beginner" selected>Beginner</option>
+                                                <option value="intermediate">Intermediate</option>
+                                                <option value="advance">Advance</option>
+                                            </select>
+                                            <button type="button"
+                                                class="custom-select-button flex w-full items-center justify-between rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.95)] px-4 py-[0.6rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition-all duration-300 ease-in-out focus:border-[#d4af37] focus:shadow-[0_0_10px_rgba(212,175,55,0.2)]">
+                                                <span class="custom-select-value">Beginner</span>
+                                                <svg class="h-4 w-4 text-[#d4af37] transition-transform duration-300"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <ul
+                                                class="custom-select-dropdown absolute left-0 right-0 top-[calc(100%+0.5rem)] hidden max-h-[220px] overflow-y-auto overflow-x-hidden rounded-xl border border-[#d4af374d] bg-[rgba(26,11,13,0.98)] p-1.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-200">
+                                                <li data-value="beginner"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[#fdf4f1] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Beginner</li>
+                                                <li data-value="intermediate"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Intermediate</li>
+                                                <li data-value="advance"
+                                                    class="cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    Advance</li>
+                                            </ul>
+                                        </div>
                                     </div>
 
                                     <div
-                                        class="rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2">
+                                        class="relative z-10 rounded-2xl border border-[#d4af37b3] bg-[rgba(255,255,255,0.04)] px-[0.7rem] py-2 transition-all duration-300 hover:border-[#d4af37] hover:bg-[rgba(255,255,255,0.06)] hover:shadow-[0_0_15px_rgba(212,175,55,0.15)]">
                                         <label for="questions"
-                                            class="mb-[0.2rem] block text-[0.82rem] font-bold">Select Number of
-                                            Questions</label>
-                                        <select id="questions" name="questions"
-                                            class="w-full rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.9)] px-3 py-[0.45rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition duration-200 ease-in-out focus:-translate-y-px">
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                        </select>
+                                            class="mb-[0.35rem] block text-[0.82rem] font-bold text-[#f0ca5c] tracking-wide">Select
+                                            Number of Questions</label>
+                                        <div class="relative custom-select-wrapper" data-target="questions">
+                                            <select id="questions" name="questions" class="hidden">
+                                                <option value="10" selected>10 Questions</option>
+                                                <option value="15">15 Questions</option>
+                                                <option value="20">20 Questions</option>
+                                            </select>
+                                            <button type="button"
+                                                class="custom-select-button flex w-full items-center justify-between rounded-[14px] border border-[#d4af3726] bg-[rgba(19,8,8,0.95)] px-4 py-[0.6rem] text-[0.88rem] font-semibold text-[#fdf4f1] outline-none transition-all duration-300 ease-in-out focus:border-[#d4af37] focus:shadow-[0_0_10px_rgba(212,175,55,0.2)]">
+                                                <span class="custom-select-value">10 Questions</span>
+                                                <svg class="h-4 w-4 text-[#d4af37] transition-transform duration-300"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            <ul
+                                                class="custom-select-dropdown absolute left-0 right-0 top-[calc(100%+0.5rem)] hidden max-h-[220px] overflow-y-auto overflow-x-hidden rounded-xl border border-[#d4af374d] bg-[rgba(26,11,13,0.98)] p-1.5 shadow-[0_15px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-200">
+                                                <li data-value="10"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[#fdf4f1] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    10 Questions</li>
+                                                <li data-value="15"
+                                                    class="mb-1 cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    15 Questions</li>
+                                                <li data-value="20"
+                                                    class="cursor-pointer rounded-lg px-3 py-[0.55rem] text-[0.88rem] font-medium text-[rgba(253,244,241,0.7)] transition-all duration-200 hover:bg-[#d4af3726] hover:text-[#f0ca5c] hover:translate-x-1">
+                                                    20 Questions</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="mt-0 flex items-center justify-center pt-[0.55rem]">
                                     <button type="submit"
-                                        class="brand-wordmark w-full cursor-pointer rounded-2xl bg-transparent px-4 py-[0.68rem] my-4 text-[1rem] text-[#ffffff] border-2 border-[#fde07f] duration-300 ease-in-out disabled:cursor-progress disabled:opacity-75 hover:bg-[#d4af37] hover:border-[#d4af37] hover:text-[#000000] hover:tracking-widest disabled:transform-none">Generate Quiz
+                                        class="brand-wordmark w-full cursor-pointer rounded-2xl bg-transparent px-4 py-[0.68rem] my-4 text-[1rem] text-[#ffffff] border-2 border-[#fde07f] duration-300 ease-in-out disabled:cursor-progress disabled:opacity-75 hover:bg-[#d4af37] hover:border-[#d4af37] hover:text-[#000000] hover:tracking-widest disabled:transform-none">Generate
+                                        Quiz
                                     </button>
                                 </div>
                             </form>
@@ -523,7 +641,8 @@
                                         </p>
                                     </div>
                                 </div>
-                                <button type="button" class="primary-cta mt-4 w-full cursor-pointer rounded-2xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.06)] px-4 py-[0.95rem] font-bold text-[#fdf4f1]"
+                                <button type="button"
+                                    class="primary-cta mt-4 w-full cursor-pointer rounded-2xl border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.06)] px-4 py-[0.95rem] font-bold text-[#fdf4f1]"
                                     id="retryBtn">Retry generation</button>
                             </div>
                         </div>
@@ -558,6 +677,76 @@
 
     <script src="{{ url_for('static', filename='js/sessionManager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const wrappers = document.querySelectorAll(".custom-select-wrapper");
+
+            wrappers.forEach(wrapper => {
+                const selectTargetId = wrapper.getAttribute("data-target");
+                const selectEl = document.getElementById(selectTargetId);
+                const button = wrapper.querySelector(".custom-select-button");
+                const valueSpan = button.querySelector(".custom-select-value");
+                const dropdown = wrapper.querySelector(".custom-select-dropdown");
+                const options = dropdown.querySelectorAll("li");
+                const icon = button.querySelector("svg");
+
+                button.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    // Close all other dropdowns
+                    document.querySelectorAll(".custom-select-dropdown").forEach(drop => {
+                        if (drop !== dropdown) {
+                            drop.classList.add("hidden");
+                            drop.previousElementSibling.querySelector("svg").classList.remove("rotate-180");
+                        }
+                    });
+
+                    // Toggle current dropdown
+                    const isHidden = dropdown.classList.contains("hidden");
+                    if (isHidden) {
+                        dropdown.classList.remove("hidden");
+                        icon.classList.add("rotate-180");
+                    } else {
+                        dropdown.classList.add("hidden");
+                        icon.classList.remove("rotate-180");
+                    }
+                });
+
+                options.forEach(option => {
+                    option.addEventListener("click", () => {
+                        const value = option.getAttribute("data-value");
+                        const text = option.textContent;
+
+                        // Update hidden native select
+                        selectEl.value = value;
+                        selectEl.dispatchEvent(new Event('change'));
+
+                        // Update button span text
+                        valueSpan.textContent = text;
+
+                        // Highlight selected option
+                        options.forEach(opt => {
+                            opt.classList.remove("text-[#fdf4f1]", "bg-[#d4af3710]");
+                            opt.classList.add("text-[rgba(253,244,241,0.7)]");
+                        });
+                        option.classList.remove("text-[rgba(253,244,241,0.7)]");
+                        option.classList.add("text-[#fdf4f1]", "bg-[#d4af3710]");
+
+                        // Close dropdown
+                        dropdown.classList.add("hidden");
+                        icon.classList.remove("rotate-180");
+                    });
+                });
+            });
+
+            // Close dropdowns on outside click
+            document.addEventListener("click", () => {
+                document.querySelectorAll(".custom-select-dropdown").forEach(drop => {
+                    drop.classList.add("hidden");
+                    drop.previousElementSibling.querySelector("svg").classList.remove("rotate-180");
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
